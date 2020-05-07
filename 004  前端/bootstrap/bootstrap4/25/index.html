@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>25.POP提示(Popover)</title>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+</head>
+<body>
+<div class="container"><br>
+    <p>
+        <button class="btn btn-primary" data-toggle="popover" data-content="内容内容内容。" title="标题内容123！" id="myPopover">button</button>
+    </p>
+    <button id="btn1">show</button>
+    <button id="btn2">hide</button>
+    <button id="btn3">toggle</button>
+</div>
+
+<script src="../js/jquery.min.js"></script>
+<script src="../js/bootstrap.bundle.min.js"></script>
+<script>
+    $('[data-toggle="popover"]').popover()
+
+    var myPopover=$('#myPopover');
+
+    $('#btn1').click(function () {
+        myPopover.popover('show')
+    })
+
+    $('#btn2').click(function () {
+        myPopover.popover('hide')
+    })
+
+    $('#btn3').click(function () {
+        myPopover.popover('toggle')
+    })
+
+    myPopover.on('show.bs.popover',function () {
+        alert('show')
+    }).on('shown.bs.popover',function () {
+        alert('shown')
+    }).on('hide.bs.popover',function () {
+        alert('hide')
+    }).on('hidden.bs.popover',function () {
+        alert('hidden')
+    }).on('inserted.bs.popover',function () {
+        alert('inserted')
+    })
+</script>
+</body>
+</html>

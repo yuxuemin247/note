@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>32.滚动监听(Scrollspy)</title>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+</head>
+<body>
+<div class="container"><br>
+    <div class="row">
+        <div class="col-3">
+            <div class="list-group">
+                <a href="#item-1" class="list-group-item list-group-item-action">Item 1</a>
+                <a href="#item-2" class="list-group-item list-group-item-action">Item 2</a>
+                <a href="#item-3" class="list-group-item list-group-item-action">Item 3</a>
+            </div>
+        </div>
+        <div class="col-9">
+            <div style="position:relative;height:350px;overflow-y:scroll;" data-spy="scroll">
+                <h4 id="item-1">Item 1</h4>
+                <p>
+                    Item 1<br>Item 1<br>Item 1<br>Item 1<br>Item 1<br>Item 1<br>Item 1<br>Item 1<br>Item 1<br>Item 1<br>
+                </p>
+
+                <h4 id="item-2">Item 2</h4>
+                <p>
+                    Item 2<br>Item 2<br>Item 2<br>Item 2<br>Item 2<br>Item 2<br>Item 2<br>Item 2<br>Item 2<br>Item
+                    2<br>Item 2<br>
+                </p>
+
+                <h4 id="item-3">Item 3</h4>
+                <p>
+                    Item 3<br>Item 3<br>Item 3<br>Item 3<br>Item 3<br>Item 3<br>Item 3<br>Item 3<br>Item 3<br>Item
+                    3<br>Item 3<br>
+                </p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="../js/jquery.min.js"></script>
+<script src="../js/bootstrap.bundle.min.js"></script>
+<script>
+    $('[data-spy="scroll"]').on('activate.bs.scrollspy', function () {
+        console.log(1)
+    })
+
+</script>
+</body>
+</html>

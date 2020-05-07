@@ -1,0 +1,149 @@
+回顾
+FHS 是一套目录规范 
+
+各个目录的作用
+etc 			各种配置文件  resolve.conf
+bin / sbin		可执行文件  sbin管理员可以用的
+dev 			各种外设
+var				经常会发生变化的数据  例如log
+media  			存储设备的挂载点	
+mnt				存储设备的临时挂载点 
+usr	/local		用户的安装目录
+opt				第三方文件 			
+tmp				临时文件存储
+lib / lib64    	链接库存储目录
+
+
+修改DNS配置 
+1.网卡对应的配置文件   /network-scripts
+2.resolv.conf  	 	   /在启动网卡时会自动将network-scripts下的配置覆盖到resolve中
+						可以添加PEERDNS=no来阻止覆盖(不常用)
+修改主机名
+hostnamectl set-hostname xxx
+
+修改配置文件后 需要source
+
+
+环境变量配置文件
+
+
+1.全局的
+	/etc/profile
+	/etc/bashrc
+2.用户独享的 
+	~/.bash_profile
+	~/.bashrc
+	
+
+软件包的安装方式
+1.yum   基于网络
+	install  remove  search  -y
+	provides netstat
+2.rpm	基本本地安装包的管理器 
+	rpm -ivh rpm包的路径
+	rpm -e 包名
+	
+3.编译安装
+	适用于源码安装 
+	.configure 配置文件 用来指定编译相关的参数
+	make 编译
+	make install 
+	创建软连接 (忽略版本信息)
+	添加到环境变量
+	
+	PATH=$PATH:你的bin路径
+	export PATH
+	
+	
+今日内容
+linux文件类型 
+一切皆文件 
+
+- 普通文件 
+d 目录
+l 链接文件
+p 管道文件 
+c 字符设备 (键盘 打印机)
+b 块设备	(u盘 硬盘 CD 存储设备)
+s socket文件
+
+
+
+txt 					文本
+log 					日志文件 
+cfg conf configure xml  配置文件
+sh csh 					shell脚本
+py  					python脚本
+
+后缀对于linux系统没有任何意义 
+windows中用于关联应用程序
+
+
+
+
+
+
+
+硬链接 
+每一个文件存储在linux中
+都有一个节点信息和磁盘上的真实数据 
+访问数据时都是先查找节点信息 在读取节点中
+物理地址从而找到对应的数据 
+硬链接指的是 完全的复制了一份节点数据
+
+特点: 两个节点指向同一个物理地址 
+其中一个进行了修改 也会 同步反映到另一个硬连接中
+
+软连接
+是指向了另一个节点信息(硬链接)
+
+
+共同点都不会占用多余的内存 
+
+硬链接 可以防止数据被直接删除 
+
+
+
+
+
+当服务器运行了很长时间后 可能会出现磁盘已满的问题但是当你查看容量时发现还有空闲容量
+可能是因为inode节点不够用了,是由于小文件过多造成的 
+使用find 来查找小文件 进行清理 
+
+
+
+如果确实视容量不足 我们可以删除无用大文件 
+使用du命令查找 
+du / -sh |grep G   # 查找超过一个G的文件 
+然后一步一步跟踪找到对应文件进行清理 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

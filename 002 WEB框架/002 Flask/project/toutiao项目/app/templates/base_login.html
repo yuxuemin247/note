@@ -1,0 +1,33 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title>千锋头条</title>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="{{url_for('static',filename='css/fontawesome-free/css/all.min.css')}}">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{{url_for('static',filename='css/adminlte.min.css')}}">
+    <!-- jQuery -->
+    <script src="{{ url_for('static',filename='js/jquery/jquery.min.js')}}"></script>
+    <!-- Bootstrap -->
+    <script src="{{ url_for('static',filename='js/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <!-- AdminLTE App -->
+    <script src="{{ url_for('static',filename='adminlte.js') }}"></script>
+
+</head>
+<body class="hold-transition login-page">
+<div class="login-box">
+  <div class="login-logo">
+    <b>千锋头条</b>
+  </div>
+  <!-- /.login-logo -->
+  <div class="card">
+ {% block content %}
+ {% endblock %}
+</body>
+</html>

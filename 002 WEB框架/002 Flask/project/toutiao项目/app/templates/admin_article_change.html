@@ -1,0 +1,102 @@
+{%  extends 'admin_dashboard.html' %}
+{% block content_js %}
+     <!-- Select2 -->
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/select2/select2.min.css')}}">
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
+<!-- Select2 -->
+<script src="{{ url_for('static',filename='js/select2/select2.full.min.js')}}"></script>
+<script>
+$(function () {
+    $('.select2').select2({
+      theme: 'bootstrap4'
+    })
+})
+</script>
+{% endblock %}
+{% block content %}
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark">文章管理</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item"><a href="{{url_for('blue.admin_article')}}">文章管理</a></li>
+              <li class="breadcrumb-item active">修改文章</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        {{ error }}
+        <div class="row">
+          <div class="col-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">修改文章</h3>
+              </div>
+              <!-- /.card-header -->
+
+              <!-- form start  try-->
+              <form role="form" method="post" action="">
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="name">标题</label>
+                    <input type="text" class="form-control" id="title" name="title" required placeholder="标题" value="{{ article.title }}">
+                  </div>
+                  <div class="form-group">
+                    <label for="channel">频道</label>
+                    <select class="form-control select2" name="channel" id="channel" style="width: 100%;">
+                        {% for channel  in channels %}
+                      <option value="{{ channel.id}}"
+                              {% if channel.id ==ch_id %}
+                              selected="selected"
+                              {% endif %}
+                      >{{ channel.ch_name}}</option>
+                        {% endfor %}
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="tags">标签</label>
+                    <select class="select2"  multiple="multiple" name="tags" id="tags" style="width: 100%;" data-placeholder="请选择标签"
+>
+                        {% for tag in tags  %}
+                      <option value="{{ tag.id }}"
+                            {% for  i in article.tags %}
+                              {% if  tag.id==i.id%}
+                              selected="selected"
+                              {% endif %}
+                                {% endfor %}
+                      >{{ tag.tag_name }}</option>
+                        {% endfor %}
+
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="content">正文</label>
+                    <textarea class="form-control"  name="content" id="content" cols="120" rows="30" placeholder="正文">{{article.txt_word}}</textarea>
+                  </div>
+                </div>
+                <!-- /.card-body -->
+
+                <div class="card-footer">
+                  <button type="submit" class="btn btn-primary">提交</button>
+                </div>
+              </form>
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+
+      </div><!--/. container-fluid -->
+    </section>
+    <!-- /.content -->
+{% endblock %}

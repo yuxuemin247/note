@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>23.弹出提示框(Toast)</title>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+</head>
+<body>
+<div class="container"><br>
+    <div class="toast" id="myToast" style="position:fixed;top:10px;right:10px;">
+        <div class="toast-header">
+            <img src="../images/logo_sm.png" alt="" width="20" class="rounded mr-2">
+            <strong class="mr-auto">标题</strong>
+            <small>1分钟前</small>
+            <button class="close mb-1 ml-2" data-dismiss="toast">&times;</button>
+        </div>
+        <div class="toast-body">
+            您好! 这是一个Toasts弹出提示框.
+        </div>
+    </div>
+
+    123
+    <p>
+        <button id="btn1">show</button>
+        <button id="btn2">hide</button>
+    </p>
+</div>
+
+<script src="../js/jquery.min.js"></script>
+<script src="../js/bootstrap.bundle.min.js"></script>
+<script>
+    var myToast=$('#myToast');
+
+    myToast.toast({
+        autohide:false
+    })
+
+    $('#btn1').click(function () {
+        myToast.toast('show')
+    })
+
+    $('#btn2').click(function () {
+        myToast.toast('hide')
+    })
+
+    myToast.on('show.bs.toast',function () {
+        alert('show')
+    }).on('shown.bs.toast',function () {
+        alert('shown')
+    }).on('hide.bs.toast',function () {
+        alert('hide')
+    }).on('hidden.bs.toast',function () {
+        alert('hidden')
+    })
+</script>
+</body>
+</html>

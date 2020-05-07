@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>13.警告提示框(Alert)</title>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="alert alert-danger alert-dismissible fade show" id="myAlert">
+            <strong>登录失败!</strong> 您的用户名或密码错误.
+            <button class="close" id="btn">&times;</button>
+        </div>
+
+
+    </div>
+
+<script src="../js/jquery.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script>
+    $('#btn').click(function () {
+        $('#myAlert').alert('close')
+    })
+
+    $('#myAlert').on('close.bs.alert',function () {
+        alert('close')
+    }).on('closed.bs.alert',function () {
+        alert('closed')
+    })
+</script>
+</body>
+</html>

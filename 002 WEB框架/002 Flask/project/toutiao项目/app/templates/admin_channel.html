@@ -1,0 +1,82 @@
+{% extends 'admin_dashboard.html' %}
+{% block content %}
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark">频道管理</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{{ url_for('blue.profile') }}">Home</a></li>
+              <li class="breadcrumb-item active">频道管理</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+
+        <div class="row">
+          <div class="col-12">
+
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">频道列表</h3>
+                  <div class="float-right">
+                    <a href="{{url_for('blue.admin_channel_add')}}">增加频道</a>
+                </div>
+              </div>
+              <!-- /.card-header -->
+
+              <div class="card-body">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th style="width: 10px">#</th>
+                      <th>名称</th>
+                      <th>排序</th>
+                      <th style="width: 100px"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                {% for i in channels.items %}
+                    <tr>
+                      <td>{{ i.id}}</td>
+                      <td>{{ i.ch_name}}</td>
+                      <td>{{ i.ch_sort }}</td>
+                      <td>
+                          <a href="{{url_for('blue.admin_channel_change',id=i.id)}}">修改</a>
+                          <a href="{{url_for('blue.admin_channel_delete',id=i.id)}}">删除</a>
+                      </td>
+                    </tr>
+                {% endfor %}
+
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+              <div class="card-footer clearfix">
+                <ul class="pagination pagination-sm m-0 float-right">
+                  {% if channels.page == 1 %}
+                    {% else %}
+                         <li class="page-item"><a class="page-link" href="{{ url_for('blue.admin_channel',page =channels.prev_num) }}">&laquo;</a></li>
+                    {% endif %}
+                        <li class="page-item"><span class="page-link" style="color: #d32535">{{channels.page}}</span></li>
+                    {% if channels.page == channels.pages %}
+
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="{{ url_for('blue.admin_channel',page=channels.next_num) }}">&raquo;</a></li>
+                    {% endif %}
+                </ul>
+              </div>
+            </div>
+            <!-- /.card -->
+
+          </div>
+        </div>
+{% endblock %}

@@ -1,0 +1,43 @@
+
+s = '''
+SMBIOS 2.7 present.
+
+Handle 0x0001, DMI type 1, 27 bytes
+System Information
+	Manufacturer: Parallels Software International Inc.
+	Product Name: Parallels Virtual Platform
+	Version: None
+	Serial Number: Parallels-1A 1B CB 3B 64 66 4B 13 86 B0 86 FF 7E 2B 20 30
+	UUID: 3BCB1B1A-6664-134B-86B0-86FF7E2B2030
+	Wake-up Type: Power Switch
+	SKU Number: Undefined
+	Family: Parallels VM
+'''
+'''
+返回:
+{
+    'manufacturer' :'Parallels Software International Inc.',
+    'prodcut_name' : 'Parallels Virtual Platform',
+    'sn' : ' Parallels-1A 1B CB 3B 64 66 4B 13 86 B0 86 FF 7E 2B 20 30'
+}
+'''
+data = s.split('\n')
+
+key_map = {
+    'Manufacturer' : 'manufacturer',
+    'Product Name' : 'prodcut_name',
+    'Serial Number': 'sn'
+}
+res = {}
+for v in data:
+    r = v.strip('\t').split(':')
+    if len(r) == 2 and r[0] in key_map:
+        res[key_map[r[0]]] = r[1].strip()
+
+print(res)
+
+
+
+
+
+

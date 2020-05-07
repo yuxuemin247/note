@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>30.折叠面板(Collapse)</title>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+</head>
+<body>
+<div class="container"><br>
+    <div id="collapseBox">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne">选项一</button>
+                </h5>
+            </div>
+            <div class="collapse show" id="collapseOne" data-parent="#collapseBox">
+                <div class="card-body">
+                    aaaaaaaa
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseTwo">选项二</button>
+                </h5>
+            </div>
+            <div class="collapse" id="collapseTwo" data-parent="#collapseBox">
+                <div class="card-body">
+                    bbbbbbb
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseThree">选项三</button>
+                </h5>
+            </div>
+            <div class="collapse" id="collapseThree" data-parent="#collapseBox">
+                <div class="card-body">
+                    aaaaaaaa
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br><br>
+    <button id="btn1">show</button>
+    <button id="btn2">hide</button>
+    <button id="btn3">toggle</button>
+</div>
+
+<script src="../js/jquery.min.js"></script>
+<script src="../js/bootstrap.bundle.min.js"></script>
+<script>
+    $('#btn1').click(function () {
+        $('#collapseThree').collapse('show')
+    })
+
+    $('#btn2').click(function () {
+        $('#collapseThree').collapse('hide')
+    })
+
+    $('#btn3').click(function () {
+        $('#collapseThree').collapse('toggle')
+    })
+
+    $('#collapseThree').on('show.bs.collapse',function () {
+        alert('show')
+    }).on('shown.bs.collapse',function () {
+        alert('shown')
+    }).on('hide.bs.collapse',function () {
+        alert('hide')
+    }).on('hidden.bs.collapse',function () {
+        alert('hidden')
+    })
+</script>
+</body>
+</html>

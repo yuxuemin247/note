@@ -1,0 +1,14 @@
+{% extends 'admin_tag_list.html' %}
+{% block delate %}
+    {% for i  in tags %}
+                      <tr>
+                      <td>{{i.id}}</td>
+                      <td>{{ i.tag_name }}</td>
+                      <td>
+                          <a href="{{url_for('blue.admin_tag_change',i.id)}}">修改</a>
+                          <a href="{{url_for('blue.admin_tag_delete',i.id)}}">删除</a>
+                      </td>
+                    </tr>
+
+    {% endfor %}
+{% endblock %}

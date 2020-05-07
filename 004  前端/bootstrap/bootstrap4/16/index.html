@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>16.下拉菜单(Dropdowns)</title>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+</head>
+<body>
+<div class="container"><br><br><br><br><br><br>
+    <div class="btn-group" id="myDropdown">
+        <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Dropdown</button>
+
+        <div class="dropdown-menu">
+            <a href="" class="dropdown-item">aaa</a>
+            <a href="" class="dropdown-item">bbb</a>
+            <a href="" class="dropdown-item">ccc</a>
+        </div>
+    </div>
+
+    <div class="btn-group">
+        <button class="btn btn-primary">Dropdown</button>
+        <button class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"></button>
+
+        <div class="dropdown-menu">
+            <a href="" class="dropdown-item">aaa</a>
+            <a href="" class="dropdown-item">bbb</a>
+            <a href="" class="dropdown-item">ccc</a>
+        </div>
+    </div>
+</div>
+
+<script src="../js/jquery.min.js"></script>
+<script src="../js/bootstrap.bundle.min.js"></script>
+<script>
+    $('#myDropdown').on('show.bs.dropdown',function () {
+        alert('show')
+    }).on('shown.bs.dropdown',function () {
+        alert('shown')
+    }).on('hide.bs.dropdown',function () {
+        alert('hide')
+    }).on('hidden.bs.dropdown',function () {
+        alert('hidden')
+    })
+</script>
+</body>
+</html>

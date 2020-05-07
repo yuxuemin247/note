@@ -1,0 +1,142 @@
+一.数据库的种类:
+
+1.关系型数据库(RDBMS):
+	MySQL,Oracle,MSSQL(SQLserver)
+2.非关系型数据库(NoSQL):
+	Redis,Memcache,MongoDB,elasticsearch
+
+	
+	ELK:日志收集
+	E:elasticsearch
+	L:logstash
+	K:Kibana
+
+
+二.MySQL的版本选择潜规则:
+https://www.mysql.com/
+
+MySQL5.6:
+1.选择GA 6-12个月
+2.小版本号为偶数版
+
+MySQL5.7
+1.选择GA 6-12个月
+2.小版本号为偶数版
+3.MySQL5.7.17以上版本   MGR
+
+三.MySQL源码安装
+1.解压
+[root@db01 ~]# tar xf mysql-5.6.40.tar.gz
+2.进入目录
+[root@db01 ~]# cd mysql-5.6.40
+[root@db01 mysql-5.6.40]# ll
+3.生成编译文件
+
+cmake . -DCMAKE_INSTALL_PREFIX=/usr/local/mysql-5.6.40 \
+-DMYSQL_DATADIR=/usr/local/mysql-5.6.40/data \
+-DMYSQL_UNIX_ADDR=/usr/local/mysql-5.6.40/tmp/mysql.sock \
+-DDEFAULT_CHARSET=utf8 \
+-DDEFAULT_COLLATION=utf8_general_ci \
+-DWITH_EXTRA_CHARSETS=all \
+-DWITH_INNOBASE_STORAGE_ENGINE=1 \
+-DWITH_FEDERATED_STORAGE_ENGINE=1 \
+-DWITH_BLACKHOLE_STORAGE_ENGINE=1 \
+-DWITHOUT_EXAMPLE_STORAGE_ENGINE=1 \
+-DWITH_ZLIB=bundled \
+-DWITH_SSL=bundled \
+-DENABLED_LOCAL_INFILE=1 \
+-DWITH_EMBEDDED_SERVER=1 \
+-DENABLE_DOWNLOADS=1 \
+-DWITH_DEBUG=0
+
+4.编译
+make
+
+5.安装
+make install
+
+
+=========================二进制安装===============================
+
+6.进入mysql程序目录
+[root@db02 ~]# cd /usr/local/mysql-5.6.40/
+
+7.创建mysql系统用户
+[root@db01 mysql-5.6.40]# useradd mysql -s /sbin/nologin -M
+
+8.进入配置文件及脚本目录
+[root@db02 mysql-5.6.40]# cd support-files/
+
+9.拷贝配置文件到etc
+[root@db01 support-files]# cp my-default.cnf /etc/my.cnf
+cp: overwrite ‘/etc/my.cnf’? y
+
+10.拷贝启动脚本
+[root@db01 support-files]# cp mysql.server /etc/init.d/mysqld
+
+11.进入初始化目录
+[root@db01 mysql-5.6.40]# cd /usr/local/mysql-5.6.40/scripts/
+
+12.初始化数据库
+[root@db01 scripts]# ./mysql_install_db --user=mysql --basedir=/usr/local/mysql-5.6.40 --datadir=/usr/local/mysql-5.6.40/data
+
+13.做软连接
+[root@db02 scripts]# ln -s /usr/local/mysql-5.6.40 /usr/local/mysql
+
+14.启动mysql
+[root@db02 scripts]# /etc/init.d/mysqld start
+
+Starting MySQL.Logging to '/usr/local/mysql/data/db02.err'.
+. SUCCESS! 
+
+15.添加环境变量
+[root@db02 scripts]# vim /etc/profile
+export PATH="/usr/local/mysql/bin:$PATH"
+
+16.加载环境变量
+[root@db02 scripts]# source /etc/profile
+
+17.授权
+[root@db01 scripts]# chown  -R mysql.mysql /usr/local/mysql*
+
+18.连接mysql
+[root@db02 scripts]# mysql
+
+19.设置mysql密码
+[root@db02 scripts]# mysqladmin -uroot -p password 123
+
+20.连接mysql
+[root@db01 scripts]# mysql -uroot -p123
+
+
+四.mysql基础优化:
+1.删除 没有用的库
+mysql> show databases;
+mysql> drop database test;
+Query OK, 0 rows affected (0.00 sec)
+
+2.删除没有用的用户
+mysql> select user,host from mysql.user;
+mysql> drop user root@'::1';
+Query OK, 0 rows affected (0.00 sec)
+mysql> delete from mysql.user where user='root' and host='db01';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

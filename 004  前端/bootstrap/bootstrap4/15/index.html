@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>15.按钮(Button)</title>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <p>
+        <button class="btn btn-primary" id="myBtn">提交</button>
+    </p>
+    <button id="btn">状态切换</button>
+
+</div>
+
+<script src="../js/jquery.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script>
+    $('#btn').click(function () {
+        $('#myBtn').button('toggle')
+    })
+</script>
+</body>
+</html>

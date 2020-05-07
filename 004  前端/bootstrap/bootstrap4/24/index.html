@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>24.提示冒泡(Tooltip)</title>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+</head>
+<body>
+<div class="container"><br><br><br><br><br>
+    <p>
+        <button class="btn btn-primary" data-toggle="tooltip" title="标题内容123！" id="myTooltip">button</button>
+    </p>
+
+    <button id="btn1">show</button>
+    <button id="btn2">hide</button>
+    <button id="btn3">toggle</button>
+</div>
+
+<script src="../js/jquery.min.js"></script>
+<script src="../js/bootstrap.bundle.min.js"></script>
+<script>
+    $('[data-toggle="tooltip"]').tooltip()
+
+    var myTooltip=$('#myTooltip');
+
+    $('#btn1').click(function () {
+        myTooltip.tooltip('show')
+    })
+
+    $('#btn2').click(function () {
+        myTooltip.tooltip('hide')
+    })
+
+    $('#btn3').click(function () {
+        myTooltip.tooltip('toggle')
+    })
+
+    myTooltip.on('show.bs.tooltip',function () {
+        alert('show')
+    }).on('shown.bs.tooltip',function () {
+        alert('shown')
+    }).on('hide.bs.tooltip',function () {
+        alert('hide')
+    }).on('hidden.bs.tooltip',function () {
+        alert('hidden')
+    }).on('inserted.bs.tooltip',function () {
+        alert('inserted')
+    })
+
+</script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>26.弹出模态框(Modal)</title>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+</head>
+<body>
+<div class="container"><br>
+    <p>
+        <button class="btn btn-primary" data-toggle="modal" data-target="#myModal">Modal</button>
+    </p>
+    <button id="btn1">show</button>
+
+    <button id="btn3">toggle</button>
+</div>
+
+<div class="modal fade" tabindex="-1" id="myModal" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">标题！</h5>
+                <button class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xl-4">aaa</div>
+                        <div class="col-xl-8">bbb</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button class="btn btn-primary">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../js/jquery.min.js"></script>
+<script src="../js/bootstrap.bundle.min.js"></script>
+<script>
+    var myModal=$('#myModal');
+    
+    $('#btn1').click(function () {
+        myModal.modal('show')
+    })
+
+    $('#btn2').click(function () {
+        myModal.modal('hide')
+    })
+
+    $('#btn3').click(function () {
+        myModal.modal('toggle')
+    })
+
+    myModal.on('show.bs.modal',function () {
+        alert('show')
+    }).on('shown.bs.modal',function () {
+        alert('shown')
+    }).on('hide.bs.modal',function () {
+        alert('hide')
+    }).on('hidden.bs.modal',function () {
+        alert('hidden')
+    })
+</script>
+</body>
+</html>

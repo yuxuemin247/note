@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>2.禁用响应式_响应式分界点</title>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <style>
+        #myP{
+            font-size: 14px;
+        }
+        @media (min-width: 768px) {
+            #myP{
+                font-size: 24px;
+                color: #FF0;
+            }
+        }
+        @media (min-width: 992px) {
+            #myP{
+                font-size: 34px;
+                color: #F00;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p id="myP">网战天下</p>
+    </div>
+</body>
+</html>

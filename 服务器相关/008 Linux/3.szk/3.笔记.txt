@@ -1,0 +1,169 @@
+
+上节回顾:
+
+	1. 为啥要搞cmdb?
+		 - Excel表格进行管理资产, 资产变更以及资产记录比较麻烦
+		 - 自动化运维 (目标)
+		 - 年底审计部门的资产, 计算成本和利润
+	
+	2. 你们cmdb的方案是啥? 
+		
+		- agent
+		- ssh类 (paramiko模块)
+		- salt-stack
+		
+	
+	3. 你在这个项目中负责哪一块?
+		
+		资产采集: 
+			配置:参考了Django的高级配置
+			核心采集 : 做了可插拔式的插件采集,参考了django的中间件 ---> 中间件相关的知识
+	
+	4. 你在开发的过程中遇到了哪些问题?
+		技术问题:
+			- Linux命令不熟  方案: (查资料, 问运维)
+			- 唯一标识问题
+			
+		上面的技术问题其实都不是问题, 最大问题是: 沟通问题
+
+		
+今日内容:
+	
+	
+	唯一标识问题:
+		
+		之前的解决方案:
+			用 sn 作为唯一标识,到数据库中去取数据
+		问题:
+			虚拟机和实体机公用一个sn, 导致最终取出来的数据缺失
+	
+		解决:
+			业务逻辑解决:
+				- 和产品商量, 不采集虚拟机资产, 但是99%公司, 都是要采集的
+			
+			技术方案解决:
+				- hostname (主机名)
+				问题:
+				    主机名可以随时被修改
+				
+				解决方案:
+					运维标准化流程:
+						
+						a. 手工录入服务器的机房, 机架, 第几层 
+						b. 提前对服务器分配主机名 (主机名一定是唯一的)
+						
+						c. 第一次采集, 需要运行一下采集资产的客户端(s5client客户端)
+						    client端:
+							  - 将主机名保存到一个文件中
+							  
+						d. 第n次采集, 尽管主机名已经被开发更改,但我们永远以文件中的主机名为准	
+				
+				代码:
+					hostname = info['basic']['data']['hostname']
+					h = open(os.path.join(settings.BASEDIR,'conf/cert'), 'r', encoding='utf-8').read()
+					if not h:
+						with open(os.path.join(settings.BASEDIR,'conf/cert'), 'w', encoding='utf-8') as fp:
+							fp.write(hostname)
+					else:
+						info['basic']['data']['hostname'] = h
+						
+				ps: 
+					- 线上主机名一定要改回去
+					- 只要涉及到线上生产环境的配置, 千万不要动
+					
+	
+	sshsalt:
+		提高并发:
+			多线程, 多进程
+			线程池, 进程池
+			
+		python2:
+			线程池: 无
+			进程池: 有
+		
+		python3:
+			进程池: 有
+			线程池: 有
+		
+		代码:
+			from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
+			
+			    def run(self, hostname):
+					info = PluginsManager(hostname=hostname).execute()
+					self.post_data(info)
+
+				def collect(self):
+					host_list = self.get_hosts()
+					p = ThreadPoolExecutor(10)
+					for hostname in host_list:
+						p.submit(self.run, hostname)
+			
+	
+	
+	数据库的设计:
+		重点: 表和表之间的关系
+		
+		资产: 
+			现在只收集服务器的信息
+			将来回收集交换机还有路由器等网络设备
+	
+		目录结构:
+			api : 只负责数据的接收和清洗, 并入库
+			backend : 负责后台数据的管理和记录
+			repository: 负责数据模型的创建
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+	
+	
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+			
+			
+						
+					
+				
+				
+				
+					
+				
+		
+		
+		
+			
+		
+
+
+
+
+
+
+
+
+

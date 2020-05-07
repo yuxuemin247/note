@@ -1,0 +1,176 @@
+上节的回顾:
+
+	1. 为啥要使用cmdb?
+		- 为了提高运维效率(实现运维自动化的第一步)
+		- Excel管理资产过于混乱, 不方便年底进行资产的审计, 因此需要开发一套cmdb
+		
+	2. cmdb的设计方案?
+		
+		- agent 方案
+		- ssh 类的方案(paramiko模块, ansible)
+		- salt-stack方案
+			问题: 运维负责将salt-stack安装好
+		
+	3. 编写代码:
+		目录:
+			bin
+			lib
+			conf
+			src/core
+			test
+			log (不建议在项目中添加)
+		
+		高级配置文件:
+			整合了自定义的配置文件以及全局的配置文件
+			核心点:
+				getattr, setattr
+			参考了 django 的配置文件
+		
+今日内容:
+		
+	
+	1. 采集代码全部搞完
+	
+		- 可插拔式的插件
+			参考django的中间件的写法
+			
+			高内聚低耦合:
+				一个文件就负责干你这个文件该干的事情
+	
+			版本一:
+				在start.py中,编写业务逻辑代码:
+					        if mode == 'agent':
+								import subprocess
+								res = subprocess.getoutput('cat /proc/cpuinfo')
+								ip_info = res[2:4]
+
+								requests.post('http://127.0.0.1:8001/asset/', data=ip_info)
+							elif mode == 'ssh':
+								import paramiko
+
+								# 创建SSH对象
+								ssh = paramiko.SSHClient()
+								# 允许连接不在know_hosts文件中的主机
+								ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+								# 连接服务器
+								ssh.connect(hostname='c1.salt.com', port=22, username='root', password='123')
+								# 执行命令
+								stdin, stdout, stderr = ssh.exec_command('cat /proc/cpuinfo')
+								# 获取命令结果
+								result = stdout.read()
+								# 关闭连接
+								ssh.close()
+							elif mode == 'salt':
+								import salt.client
+								local = salt.client.LocalClient()
+								result = local.cmd('c2.salt.com', 'cmd.run', ['cat /proc/cpuinfo'])
+				
+				缺点: 
+					扩展性差
+				优点:
+					开发上线快
+			版本二:
+				将业务逻辑的代码以插件的形式,写在src目录下面, 相比于版本一,更加的清爽, 业务逻辑更加的清晰
+			
+				问题:
+					无法进行随心所欲的注释
+			
+			版本三:
+			
+				可插拔式的插件采集信息
+				
+				config.py:
+					
+					PLUGINS_DICT = {
+						'xxx' : 'src.plugins.xxx.Xxx',
+						......
+					}
+				
+				__init__.py:
+					    def execute(self):
+							# 1. 获取配置
+
+							# 2. 循环执行
+							for k, v in self.pluginSettings.items():
+								# k: basic  v: src.plugins.basic.Basic
+								module_name, class_name = v.rsplit('.', 1)
+								## 将字符串路径导入
+								m = importlib.import_module(module_name)
+								cls = getattr(m, class_name)
+								res = cls().process()
+
+								print(res)
+				
+			插件代码冗余:
+				
+				1. 写一个基类, 有一个通用执行的方法, 然后所有插件继承基类
+				
+				2. 将函数名作为参数传入一个函数中
+				
+				salt的调用:
+					ps: 
+						python2:
+							import salt.client
+							local = salt.client.LocalClient()
+							result = local.cmd('c2.salt.com', 'cmd.run', [cmd])
+						
+						python3:
+							import subprocess
+							res_cmd = "salt '%s' cmd.run '%s'" % (self.hostname,cmd)
+							res = subprocess.getoutput(res_cmd)
+							return res
+			
+			
+			
+			
+		- 错误信息的管理:
+			
+				容错(代码健壮性):
+					import traceback
+					traceback.format_exc()
+				
+		
+		- post数据:
+			使用request.body获取数据
+		
+		
+		
+		
+		今日作业:
+			
+			1. 把client端整理
+			2. disk分析入库(细颗粒度的分析)
+				
+				增加
+					新的post的数据
+					求差集
+					>>> old = set([1,2,3])
+					>>> new = set([1,2,4])
+					new - old
+				删除
+					old - new
+
+				修改
+				
+					old.intersection(new)
+					
+		
+			
+		
+	
+	
+	
+	
+
+
+
+
+
+
+		
+			
+			
+		
+		
+		
+		

@@ -1,0 +1,18 @@
+{% extends 'base_login.html' %}
+
+
+
+ {% block content %}
+{% if current_user.is_authenticated %}
+    当前登录用户为：{{ current_user.username }}，<a href="{{ url_for('blue.logout') }}">注销</a>
+{% else %}
+
+    <a href="{{ url_for('blue.login') }}">请登录</a>
+{% endif %}
+<a href="#">用户主页</a>
+<a href="#">关于网站</a>
+ {% endblock content %}
+
+
+</body>
+</html>

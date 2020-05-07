@@ -1,0 +1,2 @@
+Echarts是一个百度开源的可视化库，以及多种多样的可视化类型。
+http://echarts.baidu.com/index.html

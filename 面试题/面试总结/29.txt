@@ -1,0 +1,60 @@
+def decorator(func):
+	@wraps(func)  #这里是因为保存
+    def wrapper(*args,**kwargs):
+        print('任务开始')
+        r=func(*args,**kwargs)
+        print('任务完成')
+    return  wrapper
+###Python装饰器（decorator）在实现的时候，被装饰后的函数其实已经是另外一个函数了（函数名等函数属性会发生改变），为了不影响，Python的functools包中提供了一个叫wraps的decorator来消除这样的副作用。
+    wraps() : 消除装饰器带来的一些副作用
+              获取对象名：
+              house.__name__   ---> 获取函数名
+              house.__doc__    ---> 获取文档注释
+@decorator
+def fi():
+    print(123)
+fi()
+
+
+
+接到一个新任务先去市场看看有没有接口，
+
+
+im  环信 即时通讯云
+七牛云文件上传需要
+auto_now_add 创建时间
+日志在我们分布式系统中发挥着重要的作用
+DAU 日活跃 Daily Active User
+MAU 月活
+ARPU  付费   总收入/所有用户
+ARPPU 
+
+电商业务
+	区别用户定价：
+	给不愿意付费的用户优惠券， 	
+python的bug和进行静态的代码分析
+Pychecker 是一个python代码的静态分析工具，它可以帮助查找python代码的bug，会对代码的复杂度和格式提出警告。
+pylint是另外一个工具可以进行coding standard 检查
+python中search和match()区别
+match()函数只匹配是不是字符串的开始位置，search（）会扫描整个string查找	
+字符串格式化 
+%   .format
+
+% 变量正好是元组
+
+**args 当你不确定你的函数里将要传递多少参数时你可以用 *args .例如,它可以传递任意
+数量的参数 : 
+**kwargs 关键字参数，它可以解包。
+
+python不需要函数重载
+函数重载是为了解决两个问题
+两个函数仅仅是参数类型 和 参数个数多少
+python参数可以是任意类型的，参数个数可以设置为缺省。
+
+__metaclass__ 它是在类创建过程中
+
+zip
+
+
+
+	

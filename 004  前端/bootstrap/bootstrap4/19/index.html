@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>19.表单(Form)</title>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+</head>
+<body>
+<div class="container"><br>
+    <form action="">
+        <div class="form-group">
+            <label for="">邮箱</label>
+            <input type="text" class="form-control is-valid" placeholder="邮箱">
+            <div class="invalid-feedback">邮箱格式不正确!</div>
+            <div class="valid-feedback">邮箱格式正确!</div>
+        </div>
+        <div class="form-group">
+            <label for="">密码</label>
+            <input type="password" class="form-control is-valid" placeholder="密码">
+            <div class="invalid-feedback">密码格式不正确!</div>
+            <div class="valid-feedback">密码格式正确!</div>
+        </div>
+        <div class="form-group">
+            <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" name="sex" id="man" class="custom-control-input">
+                <label class="custom-control-label" for="man">男</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" name="sex" id="woman" class="custom-control-input">
+                <label class="custom-control-label" for="woman">女</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" id="customSwitch1">
+                <label class="custom-control-label" for="customSwitch1">Toggle this switch element</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="">省份</label>
+            <select class="custom-select">
+                <option>-请选择-</option>
+                <option>aaa</option>
+                <option>bbb</option>
+                <option>ccc</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <input type="range" class="custom-range">
+        </div>
+        <div class="form-group">
+            <label for="">Logo</label>
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="avatar">
+                <label class="custom-file-label" for="avatar">选择文件</label>
+            </div>
+        </div>
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" name="" id="remember" class="custom-control-input">
+            <label for="remember" class="custom-control-label">记住我</label>
+        </div>
+        <button class="btn btn-primary">登录</button>
+    </form>
+</div>
+
+<script src="../js/jquery.min.js"></script>
+<script src="../js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
