@@ -192,4 +192,11 @@
 
   
 
+- docker 创建postgres数据库
 
+  ```
+  docker run --name postgres1 -e POSTGRES_PASSWORD=password -p 54321:5432 -d postgres:9.4 
+  
+  ```
+
+  
