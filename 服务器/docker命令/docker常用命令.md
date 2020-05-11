@@ -181,8 +181,6 @@
   用可视化客户端连接mysql,使用与原有宿主机使用mysql 没有区别,mysql 集群  REplication 和PXC等集群
   ```
 
-  
-
 - docker容器中 后台运行python
 
   ```
@@ -190,13 +188,9 @@
   所有的容器直接使用宿主机的linux内核,网络配置,并不会完全虚拟环境
   ```
 
-  
-
 - docker 创建postgres数据库
 
   ```
   docker run --name postgres1 -e POSTGRES_PASSWORD=password -p 54321:5432 -d postgres:9.4 
-  
   ```
-
   

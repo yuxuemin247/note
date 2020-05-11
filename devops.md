@@ -1,50 +1,8 @@
-git log 提交记录 
-git init
-git status
-git add .
-git rm --cached   将add添加到暂存区的文件取消 追踪
-git commit -m
-.git
-
-git restore  文件名  用暂存区文件恢复工作区文件区
-
-git reset  
-           --mixed  默认 只恢复暂存区和本地仓库  工作区不改变
-           --soft       只把本地仓库回退， 暂存区和工作区不变
-           --hard      暂存区、本地仓库、和工作区都回退
-
-git reset  --hard 哈希码
-git reset  --hard HEAD^
-回退后 git log 已经查不到后面的提交记录
-git reflog 可以查到所有的版本
-
 分支
 GitLab CE/EE
 除了版本控制外，提供了缺陷管理、持续集成
 
-与 远端仓库对应
-ssh-keygen -t rsa -b 2046
-git remote -v 查看是否有远端仓库对应
-git remote add origin  地址
-origin 相当于给远端仓库起别名
-
-git push -set-up-stream  origin master:master
-
--set-ip-stream  简写 -u 绑定上行流
-
-git fetch  + git merge
-git pull 拉下来自动合并
-
-
-git clone --depth=1 地址 本地想取的文件夹名字
-
 git flaw 
-
-git branch -d feature/user 删掉分支
-git push --delete 分支  删掉远端分支
-git tag v0.1 master
-git push --tags
-
 
 devops  开发和运维的组合 development operations，加强开发和运维的协作，广义是说这个产品的生命周期，参与的所有角色
 一种文化，一种理念，我们使用很多自动化工具来实现它，比如gitlab
@@ -65,7 +23,7 @@ gitlab包 本身带了很多服务有nginx,postgresql,redis
 git
 jenkins 基于java开发的持续集成工具，提供了数百个插件提供bulid、deploying
 要装JDK环境
-  
+
   查找配置文件目录
 rpm -ql jenkins
 改用户名字

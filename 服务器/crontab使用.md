@@ -12,5 +12,3 @@
     0 * * * * date >> /home/mydatetest
     ```
 
-    
-
