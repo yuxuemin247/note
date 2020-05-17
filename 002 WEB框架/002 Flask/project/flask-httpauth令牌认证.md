@@ -14,7 +14,7 @@ pip install flask-httpauth
 
 在对 HTTP 形式的 API 发请求时，大部分情况我们不是通过用户名密码做验证，而是通过一个令牌，也就是Token来做验证。此时，我们就要使用 Flask-HTTPAuth 扩展中的 HTTPTokenAuth 对象。
 
-它也提供”login_required”装饰器来认证视图函数，”error_handler”装饰器来处理错误。它提供了”verify_token”装饰器来验证令牌。我们来看下代码，为了简化，我们将 Token 与用户的关系保存在一个字典中：
+它也提供”login_required”装饰器来认证视图函数，”error_handler”装饰器来处理错误。它提供了”verify_token”装饰器来验证令牌。我们来看下代码，为了简化，将 Token 与用户的关系保存在一个字典中：
 
 ```python
 from flask import Flask, g
