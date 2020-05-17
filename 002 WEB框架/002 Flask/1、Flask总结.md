@@ -4,9 +4,7 @@
 
 Flask是一个基于Python开发并且依赖jinja2模板和Werkzeug  WSGI服务的一个微型框架，对于Werkzeug本质是Socket服务端，其用于接收http请求并对请求进行预处理，然后触发Flask框架，开发人员基于Flask框架提供的功能对请求进行相应的处理，并返回给用户，如果要返回给用户复杂的内容时，需要借助jinja2模板来实现对模板的处理，即：将模板和数据进行渲染，将渲染后的字符串返回给用户浏览器。
 
-“微”(micro) 并不表示你需要把整个 Web 应用塞进单个 Python 文件（虽然确实可以 ），也不意味着 Flask  在功能上有所欠缺。微框架中的“微”意味着 Flask 旨在保持核心简单而易于扩展。Flask 不会替你做出太多决策——比如使用何种数据库。而那些  Flask 所选择的——比如使用何种模板引擎——则很容易替换。除此之外的一切都由可由你掌握。
-
-默认情况下，Flask 不包含数据库抽象层、表单验证，或是其它任何已有多种库可以胜任的功能。然而，Flask  支持用扩展来给应用添加这些功能，如同是 Flask  本身实现的一样。众多的扩展提供了数据库集成、表单验证、上传处理、各种各样的开放认证技术等功能。Flask  也许是“微小”的，但它已准备好在需求繁杂的生产环境中投入使用
+“微”(micro) 并不意味着 Flask  在功能上有所欠缺。“微”意味着 Flask 旨在保持核心简单但同时易于扩展。Flask默认只包含werkzeug工具集和jinja2模板引擎,不包含数据库抽象层、表单验证、缓存等，支持自己选择众多的第三方扩展集成，添加这些功能。
 
 ## 2.werkzeug简介
 
@@ -24,13 +22,14 @@ def hello(request):
 if __name__ == '__main__':
     from werkzeug.serving import run_simple
     run_simple('localhost', 4000, hello)
+#这的app相当于一个flask实例，并不是视图函数
 ```
 
 ## 3.flask快速使用
 
 ```python
 from flask import Flask
-# 实例化产生一个Flask对象
+# 实例化产生一个Flask对象,传入必穿参数__name__
 app = Flask(__name__)
 # 将 '/'和视图函数hello_workd的对应关系添加到路由中
 @app.route('/') # 1. v=app.route('/') 2. v(hello_world)
@@ -39,6 +38,13 @@ def hello_world():
 
 if __name__ == '__main__':
     app.run() # 最终调用了run_simple()
+# run的启动参数
+debug    是否开启调试模式
+threaded 是否开启多线程，默认不开启
+port     端口号,默认5000
+host     指定主机，默认127.0.0.1
+#实际项目上线并不用这个启动，所以threaded没用
+当将主机设置为0.0.0.0，意味着可以使用IPV4或者127.0.0.1/localhost进行访问
 ```
 
 ### 案例：登录，显示用户信息
@@ -71,7 +77,6 @@ def detail(nid):
 def index():
     user = session.get('user_info')
     if not user:
-        # return redirect('/login')
         url = url_for('l1')
         return redirect(url)
     return render_template('index.html',user_dict=USERS)
@@ -82,7 +87,6 @@ def login():
     if request.method == "GET":
         return render_template('login.html')
     else:
-        # request.query_string
         user = request.form.get('user')
         pwd = request.form.get('pwd')
         if user == 'lqz' and pwd == '123':
@@ -92,70 +96,6 @@ def login():
 
 if __name__ == '__main__':
     app.run()
-```
-
-detail.html
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-    <h1>详细信息 {{info.name}}</h1>
-    <div>
-        {{info.text}}
-    </div>
-</body>
-</html>
-```
-
-index.html
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-    <h1>用户列表</h1>
-    <table>
-        {% for k,v in user_dict.items() %}
-        <tr>
-            <td>{{k}}</td>
-            <td>{{v.name}}</td>
-            <td>{{v['name']}}</td>
-            <td>{{v.get('name')}}</td>
-            <td><a href="/detail/{{k}}">查看详细</a></td>
-        </tr>
-        {% endfor %}
-    </table>
-</body>
-</html>
-```
-
-login.html
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-    <h1>用户登录</h1>
-    <form method="post">
-        <input type="text" name="user">
-        <input type="text" name="pwd">
-        <input type="submit" value="登录">{{error}}
-    </form>
-</body>
-</html>
 ```
 
 ### 登录认证装饰器
@@ -234,8 +174,6 @@ app.config.from_object("python类或类的路径")
 app.config.from_object('pro_flask.settings.TestingConfig')
 
 settings.py
-
-
 class Config(object):
     DEBUG = False
     TESTING = False
@@ -643,7 +581,7 @@ def ter(e):
 ```python
 @app.errorhandler(404)
 def error_404(arg):
-    return "404错误了"
+    return "404错误了"    
 ```
 
 ### 6 template_global
@@ -901,10 +839,11 @@ app.config['SESSION_REDIS'] = Redis(host='192.168.0.94',port='6379')
 Session(app)
 ```
 
-问题：设置cookie时，如何设定关闭浏览器则cookie失效。
+操作cookie时，如何设定关闭浏览器则cookie失效。
 
 ```python
-response.set_cookie('k','v',exipre=None)#这样设置即可
+response.set_cookie('k','v',exipre=None)#设置cookie
+request.cookies.get('k','v')  #获取cookie
 #在session中设置
 app.session_interface=RedisSessionInterface(conn,key_prefix='lqz',permanent=False)
 #一般不用，我们一般都设置超时时间，多长时间后失效
@@ -1403,11 +1342,9 @@ if __name__ == "__main__":
 
 ## 20.flask-script
 
-用于实现类似于django中 python3 manage.py runserver  ...类似的命令
+用于实现类似于django中 python3 manage.py runserver  ...类似的命令，就是一个flask终端运行解析器。
 
 安装：pip3 install flask-script
-
-###使用
 
 ```python
 from flask_script import Manager
