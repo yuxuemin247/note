@@ -65,3 +65,10 @@ environment=A="1",B="2",HOME="/home/skywell"       ; process environment additio
 serverurl=AUTO                ; override serverurl computation (childutils)
 ```
 
+- 启动supervisord
+
+  ```
+  supervisord -c xxxx.conf
+  ```
+
+  

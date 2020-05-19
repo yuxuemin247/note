@@ -194,3 +194,16 @@
   docker run --name postgres1 -e POSTGRES_PASSWORD=password -p 54321:5432 -d postgres:9.4 
   ```
   
+
+4、docker与宿主机同步时间
+
+- 在容器中修改下/etc/localtime文件的名称，避免冲突
+
+  ```
+  cd /etc/
+  mv localtime localtime_bak
+  cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+  ```
+
+  
+
