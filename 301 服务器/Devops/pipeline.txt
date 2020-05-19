@@ -1,0 +1,20 @@
+maven是jenkins中的一个项目		
+
+CI持续集成(不断合并代码)
+CD持续部署（不断上线） 通过自动的构建、测试和部署
+持续交付 频繁地将软件的版本交给质量团队和用户验收
+
+pipline 简单说就是运行于jenkins上的工作流框架，帮助Jenkins实现从CI到CD转变的重要角色
+pipline as code 
+stage 阶段 
+stage中每一个 有包含了 step
+声明式 脚本式
+
+代码上线管理流程
+
+wiki项目管理  
+
+jenkins sonar代码质量管理
+代码上线(脚本、ansible、saltstack)
+测试环境
+类生产环境
