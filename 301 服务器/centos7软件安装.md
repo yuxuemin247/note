@@ -62,7 +62,7 @@
   - 更新底层库
 
     ```
-    yum install
+    yum update
     ```
 
   - 移除可能存在的旧Docker版本

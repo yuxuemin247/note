@@ -151,7 +151,7 @@
   	-v  宿主机目录:容器目录
   ```
 
-### docker安装配置
+### 4 docker安装配置
 
 - 避免输出Sudo
 
@@ -171,31 +171,8 @@
 
   - service docker start
 
-- 创建mysql容器
 
-  ```
-  docker run --name 容器名 -p 宿主端口:容器端口 --net 网断名  --ip 172.18.0.3  -v 宿主地址:/var/lib/mysql  -e MYSQL_ROOT_PASSWORD=123456 -d 镜像名
-  参数 
-  	-e  环境参数
-  	-it  在创建mysql容器时不用加,不用自己进入容器中启动容器
-  用可视化客户端连接mysql,使用与原有宿主机使用mysql 没有区别,mysql 集群  REplication 和PXC等集群
-  ```
-
-- docker容器中 后台运行python
-
-  ```
-  nohup python app.pyc > logs.txt  然后直接关闭窗口(别crtul+c)
-  所有的容器直接使用宿主机的linux内核,网络配置,并不会完全虚拟环境
-  ```
-
-- docker 创建postgres数据库
-
-  ```
-  docker run --name postgres1 -e POSTGRES_PASSWORD=password -p 54321:5432 -d postgres:9.4 
-  ```
-  
-
-4、docker与宿主机同步时间
+##### 与宿主机同步时间
 
 - 在容器中修改下/etc/localtime文件的名称，避免冲突
 
@@ -205,5 +182,16 @@
   cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
   ```
 
-  
+##### 修改镜像源
+
+```
+sudo mkdir -p /etc/docker
+sudo tee /etc/docker/daemon.json <<-'EOF'
+{
+  "registry-mirrors": ["https://mlj183me.mirror.aliyuncs.com"]
+}
+EOF
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+```
 
