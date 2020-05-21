@@ -1,3 +1,15 @@
+##### 启动服务
+
+- ```
+  supervisord -c xxxx.conf
+  ```
+
+##### 进入客户端操作
+
+- ```
+  supervisorctl 
+  ```
+
 ##### 查看任务状态
 
 - ```
@@ -29,7 +41,7 @@
   supervisorctl update
   ```
 
-#####配置文件在 `etc/supervisord.d/`目录下
+#####配置文件默认在 `etc/supervisord.d/`目录下
 
 ```
 #配置文件
@@ -65,10 +77,3 @@ environment=A="1",B="2",HOME="/home/skywell"       ; process environment additio
 serverurl=AUTO                ; override serverurl computation (childutils)
 ```
 
-- 启动supervisord
-
-  ```
-  supervisord -c xxxx.conf
-  ```
-
-  
