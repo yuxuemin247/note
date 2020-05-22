@@ -2,13 +2,15 @@
 
 - 查看本地镜像
   
-- docker images 
+  ```
+  docker images
+  ```
   
 - 拉取创建镜像
   
-- docker pull 镜像名
+  - docker pull 镜像名(全名)
   
-  - dockerfile文件创建出镜像
+  - `Dockerfile`文件创建出镜像
   
   - 创建基础镜像,创建容器,容器中安装包,容器转换成镜像
   
@@ -16,26 +18,36 @@
     docker镜像是一个配置好的只读层软件环境
     ```
   
--  搜索镜像(https://hub.docker.com/)
+- 搜索镜像(https://hub.docker.com/)
 
-  - docker search 镜像名
+  ```
+  docker search 镜像名(可以非全名)
+  ```
 
 - 查看镜像详细信息
 
-  - docker inspect 镜像名
+  ```
+  docker inspect 镜像名
+  ```
 
 - 删除镜像
 
-  - docker rmi 镜像名 
+  ```
+  docker rmi 镜像名 
+  ```
 
 - 将image上传到仓库
 
-  - docker push 容器名
-  
+  ```
+  docker push 容器名
+  ```
+
 - 导出加载镜像
 
-  - docker save 镜像名  > 路径
-  - docker load  < 压缩文件路径
+  ```
+  docker save 镜像名  > 路径
+  docker load  < 压缩文件路径
+  ```
 
 ### 2 容器(container)
 
@@ -45,7 +57,7 @@
 
 - 创建容器
 
-  - docker run  -d --name=容器名 -p  宿主机端口:容器端口 -v 宿主机目录:容器目录 --net 网段名 --ip指定ip   镜像名
+  - docker run  -d --name=容器名 -p  宿主机端口:容器端口 -v 宿主机目录:容器目录 --net 网段名 --ip指定ip   -e 环境变量= xx  镜像名
 
     ```
     -it 要跟容器交互
@@ -57,59 +69,78 @@
     -name 容器名
     ```
 
-  - 创建mysql容器
-
-    ```
-    docker run -d -p 3307:3306  --name mysql-master -V /root/docker/mysql/master/conf : /etc/mysql/mysql.conf  -V /root/docker/mysql/master/data : /var/lib/mysql  -V /root/docker/mysql/master/log : var/log/mysql  -e MYSQL_ROOT_PASSWORD=y123456! mysql:5.7
-    ```
-
 - 启动某个容器
 
+  ```
   docker start 容器名
+  ```
 
 - 进入运行的容器
 
-  - docker exec  -it 容器名  /bin/bash
+  ```
+  docker exec  -it 容器名  bash
+  exit 退出,容器并不会退出
+  ```
+  
+- 进入容器执行命令
 
-    exit 退出,容器并不会退出
+  ```
+  docker exec  容器名 容器中可执行的命令
+  ```
 
 - 查看运行的容器
 
-  -  docker ps 
+  ```
+  docker ps 
+  ```
 
 - 查看容器运行日志
 
-  - docker logs 容器名
-
-  - docker logs -f 容器名            类似tailf
+  ```
+  docker logs 容器名
+  docker logs -f 容器名            类似tailf
+  ```
 
 - 查看容器的内部进程信息
 
-  - docker top 容器名
+  ```
+  docker top 容器名
+  ```
 
 - 查看容器详细信息
 
-  - docker inspect  容器名
+  ```
+  docker inspect  容器名
+  ```
 
 - 停止,暂停容器
 
-  - docker stop 容器名
-  - docker pause 容器名       暂停 
-  - docker unpause 容器名  启动暂停的
+  ```
+  docker stop 容器名
+  docker pause 容器名       暂停 
+  docker unpause 容器名  启动暂停的
+  ```
 
--  删除容器
+- 删除容器
 
-  - docker rm 容器名/id
-
-    运行中的Docker容器是无法删除的，必须先通过docker stop或者docker kill命令停止。
+  ```
+  docker rm 容器名/id
+  运行中的Docker容器是无法删除的，必须先通过docker stop停止 或者强制docker rm -f 容器
+  ```
 
 - 将container保存为一个imadge
 
+  ```
   docker commit  容器名 镜像名
+  ```
 
 ### 3 创建容器的一些技术
 
 - 网络管理技术
+
+  ```
+  桥接：方便多个容器间的通信
+  ```
 
   - 创建固定网段
 
@@ -126,6 +157,19 @@
     	#172.18.0.1是网段的网关地址,不能用的
     
     家里用的是民用宽带,ip地址本来就是动态分配的,所有要用云主机
+    ```
+
+  - 网络配置参数
+
+    每个容器在运行后，内部都有一个ip地址，即是容器内部的IP，它的作用可以让多个容器之间可以进行网络通信。
+
+    在创建镜像时，可以通过以下参数来指定
+
+    ```
+    --hostname ：指定hostname;
+    --net : 指定网络模式
+    --ip：指定IP
+    --add-host ：指定往/etc/hosts添加的host
     ```
 
 - 容器端口映射主机端口
@@ -152,24 +196,6 @@
   ```
 
 ### 4 docker安装配置
-
-- 避免输出Sudo
-
-  这里把当前用户加入到docker组就可以直接使用命令，而不用每次都加sudo
-
-  $ sudo groupadd docker
-
-  #改完后需要重新登陆用户
-
-  sudo gpasswd -a ${USER} docker
-
-- Docker版本
-
-  sudo docker --version
-
-- 启动docker
-
-  - service docker start
 
 
 ##### 与宿主机同步时间

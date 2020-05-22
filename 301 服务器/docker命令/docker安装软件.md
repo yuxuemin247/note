@@ -1,7 +1,8 @@
 ##### 1、MySQL
 
 ```
-docker run -d --name 容器名 -p 宿主端口:容器端口  -v 宿主地址:/var/lib/mysql  -e MYSQL_ROOT_PASSWORD=123456  镜像名
+docker run -d -p 3307:3306  --name mysql-master -V /root/docker/mysql/master/conf : /etc/mysql/mysql.conf  -V /root/docker/mysql/master/data : /var/lib/mysql  -V /root/docker/mysql/master/log : var/log/mysql  -e MYSQL_ROOT_PASSWORD=y123456! mysql:5.7
+
 ```
 
 ##### 2、postgresql
