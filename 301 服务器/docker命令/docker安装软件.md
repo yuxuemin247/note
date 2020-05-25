@@ -20,3 +20,9 @@ ES_JAVA_OPTS=-Xms128m -Xmx128m是指定内存，新版默认是1G
 discovery=single-node 
 ```
 
+##### 4、redis
+
+```
+docker run -itd --name redis-test -p 6379:6379 redis
+```
+
