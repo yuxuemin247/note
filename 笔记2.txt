@@ -1,0 +1,486 @@
+Python复习课
+
+~ 白板编程
+
+    ~ Python编码规范
+        - Zen of Python
+        - PEP 8
+        - Google开源项目风格指南
+        - 反模式
+            ~ 没有注释或注释太少
+            ~ 破坏语言的最佳实践
+            ~ 代码的坏味道（重复代码、面条式代码、复制粘贴编程、自负编程）
+            ~ Python反模式：缩进混乱、字符串常量混乱、过渡使用函数式编程
+        - 提高代码质量
+            ~ Python Idiom
+            ~ 提供显示接口
+            ~ 减少双向依赖
+            ~ 抽取公共代码 ---> 函数 / 继承
+            ~ 使用延迟绑定 ---> dynaconf ---> os.environ
+            ~ 使用分析工具
+                - pylint
+                    ~ pip install pylint
+                    ~ pylint example01.py
+                    ~ pylint --generate-rcfile > pylint.conf
+                    ~ pylint --rcfile=pylint.conf --disable=doc-string example01.py
+                - flake8
+
+    ~ Python最佳实践
+        - 可变类型和不可变类型
+            ~ str - 不变字符串 <-----> StringIO ---> write() / getvalue()
+            ~ bytes - 不变字节串 <-----> BytesIO ---> write() / getvalue()
+            xlwt ---> Workbook ---> add_sheet() ---> write(row, col, value) --->
+            buffer = BytesIO() ---> save(buffer) ---> getvalue() ---> HttpResponse
+                - content-type ---> MIME类型
+                - content-disposition ---> inline; filename="...." / attachment; filename="...."
+            不变对象在多线程环境下是安全的，而可变对象通常都是线程不安全的
+        - 推导式（生成式） ---> 创建列表、集合、字典
+            ~ 语法简单优雅
+            ~ 性能更好（不是函数调用而是内置的字节码指令）
+        - 迭代器和生成器
+            ~ 迭代器：实现了迭代器协议（__next__、__iter__）的对象
+            ~ 生成器：语法升级版本的迭代器
+            ~ iter()函数
+                - 哈希摘要： ---> hashlib ---> md5/ sha256 / sha512
+                    ~ 算法：MD5 / SHA1 / SHA256 ---> 签名/指纹 ---> 防伪造和放篡改
+                - 加密/解密： ---> pycrypto / pycryptodome
+                    ~ 对称加密：加密和解密使用相同的密钥 ---> AES
+                    ~ 非对称加密：加密和解密使用不同的密钥 ---> RSA
+                - 编码/解码： ---> base64 ---> b64encode / b64decode
+                    ~ BASE64：把任意二进制数据处理成64个可读的文字符号
+                    ~ 百分号编码：urllib.parse ---> quote / unquote
+            ~ 协程：可以跟别的子程序协作的子程序
+                - 生成器通过预激活操作可以变成一个协程
+                    ~ next(gen)
+                    ~ gen.send(None)
+        - 装饰器 ---> Django中间件
+            ~ 用一个函数装饰另一个函数或类为其提供额外的能力
+            ~ 额外的能力通常都是跟正常业务逻辑没有必然联系的横切关注功能
+            ~ 装饰器的作用： ---> Web后端中间件（拦截过滤器）
+                - 参数检查 / 缓存 / 代理 / 上下文提供者
+            ~ 装饰器的写法： ---> 函数 / 类
+                - 不带参数的装饰器
+                - 带参数的装饰器
+            ~ 经典面试题：
+                - 记录执行时间的装饰器
+                - 单例装饰器（单例模式：让一个类只能创建出唯一的实例）
+                提示：如果面试题中有写单例的题目，建议大家用装饰器或者元类的写法！
+            ~ 练习1：写一个装饰器函数，如果函数返回字符串则将其每个单词首字母大写
+            ~ 练习2：写一个装饰器缓存函数的执行结果
+            functools.lru_cache ---> LRU ---> 最近最少使用（缓存置换策略）
+            动态规划：后续运算直接利用前面运算的结果，最后的解只依赖于当前运算的结果，与之前的运算无关
+        - 函数的递归调用：
+            ~ 收敛条件：什么时候停止递归
+            ~ 递归公式：N和N-1的关系（递归的过程就是一个降低问题规模的过程）
+            StackOverflowError ---> RecursionError
+            sys.setrecursionlimit(...)
+            vim映射快捷键：
+                - 命令模式按冒号进入末行模式
+                - :imap <F4> if __name__ == '__main__':
+                - :inoremap _main if __name__ == '__main__':
+        - 创建虚拟环境的三种方式：
+            ~ python3 -m venv venv
+            ~ pip3 install virtualenv
+            virutalenv --python=/usr/bin/python3 venv
+            ~ pip3 install pipenv
+            pipenv shell
+        - 上下文管理器
+            ~ with - 上下文语法
+            ~ 实现了上下文管理器协议（__enter__、__exit__）的对象
+            ~ 被@contextmanager装饰器装饰的函数
+        - 面向对象的三大支柱
+            ~ 将数据和操作数据的方法从逻辑上变成一个整体 ---> 对象
+            ~ 类是对象的模板，通过类可以创建出对象，通过给对象发消息来解决问题
+            ~ 封装：隐藏实现细节，暴露简单的调用接口
+            ~ 继承：从已有的类创建新类的过程，提供继承信息的叫父类（超类、基类），得到继承信息的叫子类（派生类）
+            ~ 多态：给对象发出相同的消息，不同的对象会产生不同的行为。
+            子类继承父类时可以对父类已有方法进行重写，不同子类给出不同的实现版本。
+        - 类之间的关系（对象之间的关系）
+            ~ is-a：继承
+            ~ has-a：关联 ---> 聚合 / 合成
+            ~ use-a：依赖
+            设计原则：优先使用强关联关系而不是继承关系复用代码
+        - 魔法属性和魔法方法
+            ~ 阅读：《Python魔法方法指南》
+        - MRO问题（Method Resolution Order - 方法解析顺序）
+            ~ Python 2中的类分类旧式类和新式类
+                class Foo:  ---> 旧式类
+                class Foo(): ---> 新式类
+            ~ Python 3中的类都是新式类
+            旧式类的MRO采用的是深度优先搜索（DFS）
+            新式类的MRO采用的是C3算法（非常类似于BFS）
+            mro() / __mro__
+            实际开发时通常都会尽量避免产生菱形继承！！！
+        - 枚举
+            继承enum模块的Enum类定义枚举类型 / @unique
+            使用枚举类型是定义符号常量的最佳方式，如果变量的取值只有有限个选项，可以考虑使用枚举类型
+            经验：符号常量优于字面常量
+        - 元类
+            对象是通过类创建出来的，类是通过元类创建出来的
+            ~ 定义抽象类的元类：abc模块的ABCMeta
+            ~ 定义抽象方法：abc模块的abstractmethod装饰器
+            ~ 抽象类不能实例化
+            ~ 经典面试题：通过自定义元类实现单例模式
+            ~ 刁钻面试题：自定义ORM框架的思路
+                - 阅读：《元类在ORM框架上的应用》
+        - 深拷贝和浅拷贝
+            拷贝 ---> 复制 ---> 克隆
+            copy ---> copy / deepcopy
+
+            class PrototypeMeta(type):
+
+                def __init__(cls, *args, **kwargs):
+                    super().__init__(*args, **kwargs) 
+                    cls.clone = lambda self, is_deep=True: \
+                        copy.deepcopy(self) if is_deep else copy.copy(self)
+        - 设计模式
+            设计模式是典型场景下的成功设计，也是可以被复用的经验
+            1995年 ---> GoF ---> Design Patterns ---> 23种设计模式
+            ~ 创建型模式
+                - 单例（装饰器、元类） / 工厂 / 原型 / 建造者
+                原型模式：调用构造器创建对象比较慢（两阶段构造现申请内存再做初始），通过复制原型对象的方式来创建对象更有效率（内存复制）
+            ~ 结构型模式
+                - 适配器 / 门面 / 代理（装饰器）
+                门面模式：为复杂系统封装简单的调用接口
+            ~ 行为型模式
+                - 策略 / 迭代器 / 观察者
+
+    ~ 数据结构和算法
+        - 数据结构：各种类型的数据在计算机（内存）中如何存储和表示以便能够对其进行高效操作
+            ~ 离散结构 ---> 集合（set） ---> hash存储
+                - __hash__ ---> hash() ---> 哈希码冲突
+                - __eq__ ---> == ---> 自反性、对称性、传递性
+            ~ 线性结构 ---> 顺序表（list）、链表（deque）、栈、队列（deque）、串（str / bytes)
+                - list ---> 列表（顺序表）---> 随机读取
+                - deque ---> 双端队列（链表） ---> 两端高效插入删除元素
+                - stack：FILO（先进后出） <--- 只能在末尾插入和删除元素的列表
+                    ~ 给你元素的入栈顺序，找出可能的出栈顺序
+                    ~ 找出有多少种出栈顺序 ---> 卡特兰数 ---> 2n!/n!/(n+1)!
+                - queue：FIFO（先进先出） <--- 只能在末尾插入元素只能在起始删除元素的列表
+            ~ 非线性结构 ---> 树（层次结构）、图（网状结构）
+                - 二叉树（平衡的排序二叉树）
+                    ~ 遍历：
+                        - 先（根）序：根 - 左 - 右
+                        - 中（根）序：左 - 根 - 右
+                        - 后（根）序：左 - 右 - 根
+                    ~ 排序二叉树：左子树上的节点都比根节点小，右子树上的节点都比根节点大
+                        特点：如果对排序二叉树做一个中序遍历刚好可以得到一个排好序的序列
+                        平衡：AVL Tree / Red-Black Tree
+                - 社交网站 - 图数据库 - Neo4j
+            ~ 概率型结构
+                - Bloom Filter / Hyperloglog / Count-Min Sketch
+            
+        - 算法：解决问题的方法（步骤）
+            ~ 穷举法：穷尽所有可能直到找出正确答案
+            ~ 贪婪法：未必能找到最优解但是可以找出满意解
+            ~ 分治法：将大规模问题划分为小规模问题，用小规模问题的解还原大规模问题的解
+            ~ 动态规划：保存之前的运算结果，后续的运算基于这个结果进行与之前的运算无关
+        - 评价算法好坏的指标：
+            ~ 渐近时间复杂度 - Big O Natation - 大O标记
+                - O(1)：常量时间复杂度 - 哈希存储/布隆过滤器
+                - O(log_2 N)：对数时间复杂度 - 折半查找
+                - O(N)：线性时间复杂度 - 顺序查找 / 计数排序
+                - O(N * log_2 N)：线性对数时间复杂度 - 高级排序算法
+                - O(N * N)：平方时间复杂度 - 简单排序算法
+                - O(N * N * N)：立方时间复杂度 - 矩阵乘法 / Floyd算法
+            ~ 渐近空间复杂度
+        
+
+~ 代码管理    
+ 
+~ 代码部署
+
+    ~ The Twelve-Factor
+        - codebase
+        - dependencies
+        - config
+        - backing services
+        - build / release / run
+        - processes
+        - port binding
+        - concurrency
+        - disposability
+        - dev/prod parity
+        - logs
+        - admin processes
+
+    ~ 防火墙
+        ~ 云服务器自带的防火墙
+        ~ iptables / firewalld（CentOS）
+            - systemctl start firewalld
+            - firewall-cmd --add-port=80/tcp --permanent
+            - firewall-cmd --add-port=443/tcp --permanent
+
+    ~ 虚拟化部署
+        - Docker
+            ~ 启动 / 停止 / 重启 / 查看状态 / 开机自启 / 禁用开机自启
+                - systemctl start docker
+                - systemctl stop docker
+                - systemctl restart docker
+                - systemctl status docker
+                - systemctl enable docker
+                - systemctl disable docker
+            ~ 下载镜像: ---> 安装光盘
+                https://hub.docker.com/
+                docker pull nginx:latest
+            ~ 查看下载的镜像:
+                docker images
+            ~ 删除镜像：
+                docker rmi 镜像文件ID
+            ~ 创建并运行容器:
+                docker run -d -p 80:80 --rm --name webserver nginx:latest
+            说明：容器是轻量级的运行环境可以即用即删
+            ~ 停止/启动/重启运行的容器:
+                docker stop webserver
+                docker start webserver
+                docker restart webserver
+            ~ 删除容器:
+                docker rm webserver
+            ~ 查看运行中的容器：
+                docker ps
+            ~ 查看所有容器：
+                docker container ls -a
+            ~ 清空所有（没有运行的）容器：
+                docker container prune
+            说明：每个容器相当于又是一个微型的Linux系统，创建容器的过程就是带着系统环境装软件的过程。
+            ~ 进入容器中：
+                docker exec -it webserver /bin/bash
+            ~ 查看日志：
+                docker logs webserver
+            ~ 检查容器相关信息：
+                docker inspect webserver
+        - 数据卷操作 ---> -v / --volume
+            docker run -d -p 80:80 --name webserver \
+            -v /root/docker/nginx/html:/usr/share/nginx/html \
+            nginx:latest
+            docker run -d -p 3306:3306 --name mysql57 \
+            -v /root/docker/mysql/conf:/etc/mysql/mysql.conf.d \
+            -v /root/docker/mysql/data:/var/lib/mysql \
+            -e "MYSQL_ROOT_PASSWORD=123456" mysql:5.7.29
+        - 网络连接操作 ---> --link
+            docker run -d -p 4321:1234 --name redis-master \
+            redis:latest redis-server --port 1234 \
+            --requirepass luohao.618 --appendonly yes
+
+            docker run -d -p 4322:1234 --name redis-slave-1 \
+            --link redis-master:redis-master \
+            redis:latest redis-server --port 1234 \
+            --slaveof redis-master 1234 --masterauth luohao.618
+            docker run -d -p 4323:1234 --name redis-slave-2 \
+            --link redis-master:redis-master \
+            redis:latest redis-server --port 1234 \
+            --slaveof redis-master 1234 --masterauth luohao.618
+            docker run -d -p 4324:1234 --name redis-slave-3 \
+            --link redis-master:redis-master \
+            redis:latest redis-server --port 1234 \
+            --slaveof redis-master 1234 --masterauth luohao.618
+        提示：实际部署商业项目时绝不可能向公网暴露3306/6379等端口！！！
+        - 创建自己的镜像
+            ~ 命令方式（不推荐）
+                - docker commit es "jackfrued/es:7.6.0"
+                - docker images ----> "jackfrued/es" "7.6.0"
+                - docker save 镜像ID -o 文件名.tar "jackfrued/es:7.6.0" ---> 归档文件
+                可以通过scp、sftp将镜像对应的归档文件给到其他人，也可以直接把镜像上传到DockerHub网站
+                - docker login
+                - docker push "jackfrued/es:7.6.0"
+                其他人如果想安装自定义的镜像文件
+                - docker load -i 文件名.tar
+                - docker images ---> "jackfrued/es:7.6.0"
+                - docker run -d -p ...
+            ~ Dockerfile
+                # 指定基础镜像
+                FROM node:latest
+                # 指定维护者信息
+                MAINTAINER jackfrued
+                # 切换工作目录
+                WORKDIR /root/code
+                # 下载项目
+                RUN git clone https://gitee.com/jackfrued/mis-front-end.git
+                # 切换到项目根目录
+                WORKDIR /root/code/mis-front-end
+                # 设置npm的下载源
+                RUN npm config set registry=https://registry.npm.taobao.org
+                # 下载依赖包
+                RUN npm install
+                # 当容器启动时部署项目
+                CMD npm start
+
+                ~ 基于Dockerfile创建镜像：
+                docker build -t "jackfrued/mis-front-end:0.1" .
+                docker images
+                docker run -d -p 8080:8080 --name mis-front-end jackfrued/mis-front-end:0.1
+        - 多容器管理
+            ~ docker-compose
+            安装docker-compose：pip3 install -U docker-compose
+            用docker-compose构建镜像：docker-compose build
+            注意：上面的命令是自动在当前路径下找docker-compose.yml文件
+
+            version: '3'
+            services:
+            api-server:
+                build: ./myapp
+                ports:
+                - '8000:8000'
+                links:
+                - redis-master
+            web-server:
+                image: nginx
+                ports:
+                - '80:80'
+                volumes:
+                - ./html:/usr/share/nginx/html
+            redis-master:
+                image: redis
+                expose:
+                - '6379'
+            
+            通过docker-compose启动/停止多容器：docker-compose up / docker-compose down
+            ~ K8S ---> 多机多容器管理
+
+    ~ 自动化部署
+        - Ansible + Playbook
+        - Fabric ---> Paramiko ---> SSH ---> 系统命令
+
+    ~ 检测与监控
+        - Sentry
+            ~ git clone --depth=1 https://github.com/getsentry/onpremise.git
+            ~ cd onpremise
+            ~ sysctl -w net.ipv4.ip_forward=1
+            ~ docker-compose build
+            ~ docker-compose up
+            ~ docker-compose down
+
+~ 代码测试
+
+    ~ 软件测试概述
+        阅读：《软件测试的艺术》
+    ~ 单元测试
+        - 针对程序中最小单元（函数或方法）进行的测试
+        - 测试方法：白盒测试 / 黑盒测试
+        - unittest / mock / pytest / nose2 / coverage / ddt
+        - TestCase
+            ~ setUpClass / tearDownClass
+            ~ setUp / tearDown
+            ~ assertEqual / assertNotEqual / assertTrue / assertFalse /
+            ~ assertIsNone / assertIsNotNone / assertGreater / assertLess /
+            ~ assertIn / assertNotIn / assertRegex / assertNotRegex /
+            ~ assertRaises / assertRaisesRegex / assertCountEqual / ...
+        - TestSuite
+            ~ addTest / addTests / countTestCases
+    ~ 自动化测试
+        - Selenium - Web应用自动化测试
+    ~ 性能测试
+        - 指标 - 吞吐量和时延
+        - 工具
+            ~ ab
+            ~ sysbench
+            ~ JMeter
+            ~ LoadRunner
+
+~ 代码优化
+
+    ~ 剖析系统
+        cProfile / profile
+        line_profiler
+        mem_profiler
+    ~ 缓存和池化 ---> 空间换时间
+    ~ 并发编程
+        线程：操作系统分配CPU的基本单元
+        进程：操作系统分配内存的基本单元
+        运行一个程序 ---> 1个或多个进程 ---> 1个或多个线程 ---> main thread
+        1. 多线程 - GIL - 不能使用到CPU的多核特性，并不适合计算密集型应用 - Thread
+            ~ CPython / PyPy - GIL - malloc / free
+            ~ Jython / IronPython
+            ~ 创建启动线程的三种方式：
+                - Thread(target=..., args=(...), daemon=True).start()
+                - 继承Thread类重写run方法自定义线程类，创建对象调用start()方法启动线程
+                - 通过线程池ThreadPoolExecutor对象的submit/map方法把任务交给线程池
+        2. 多进程 - 适合计算密集型任务 - Process / fork
+            ~ 上传图片：生成各种尺寸的缩略图 ---> 交给三方云存储处理
+            ~ 上传视频：视频转码或者（有损无损）压缩
+            ~ 任务派发到其他设备或者平台
+            ~ 创建启动进程的四种方式：
+                - Process(target=..., args=(...), daemon=True).start()
+                - 继承Process类重写run方法自定义线程类，创建对象调用start()方法启动线程
+                - 通过线程池ProcessPoolExecutor对象的submit/map方法把任务交给线程池
+                - 类Unix系统上还可以通过os.fork()创建子进程
+            ~ 多进程间通信 ---> IPC ---> 
+                - 管道 ---> multiprocessing.Queue
+                - 套接字 ---> socket 
+        3. 异步编程（异步I/O）- 协程 - 协作式并发（提高了CPU的利用率）
+            多线程：占用更多的CPU运行时间（时间片）
+            多进程：占用更多的CPU或者更多的核
+            异步编程：提升CPU的利用率（不让CPU时间在限制中被浪费掉）
+                - 调用async修饰的函数不会直接得到函数执行结果而是获得协程对象
+                - 协程对象要放到事件循环中去运行（跟事件循环中的其他子程序协作）
+                    ~ 获取事件循环：loop = asyncio.get_event_loop()
+                    ~ 将协程放到事件循环中：loop.run_until_complete(co)
+                    ~ 将一组协程放到事件循环中：loop.run_until_complete(asyncio.wait([co1, co2, co3]))
+                    ~ 更换事件循环（策略）：
+                        - loop.set_event_loop(uvloop.new_event_loop()) 或者
+                        - loop.set_event_loop_policy(uvloop.EventLoopPolicy())
+                        - uvloop ---> libuv ---> yum install -y libuv libuv-devel
+                        - pip install uvloop / pipenv install uvloop
+            ~ aiohttp
+        说明：1和3适合I/O密集型任务，3是更好的选择。
+        - 临界资源 - 被多个线程竞争的资源，通常需要加锁保护否则状态错乱
+        - 关系型数据库一样会面对并发数据访问，一旦处置失当就会产生五大类问题：
+            ~ 第一类丢失更新
+            ~ 第二类丢失更新
+            ~ 脏读（读脏数据）
+            ~ 不可重复读
+            ~ 幻读
+            只有锁才能保护数据，才能解决上述问题，但是锁操作非常不方便，所以在关系型数据库中
+            我们通常是通过设置事务隔离级别让数据库自动为我们选择合适的锁。
+            READ UNCOMMITTED < READ COMMITTED < REPEATABLE READ < SERIALIZABLE
+            事务隔离级别越高数据安全性越高但是性能也就越差
+            MySQL查看事务隔离级别：select @@tx_isolation;
+            MySQL修改事务隔离级别：
+            set session transaction isolation level read committed;
+        - 线程池 / 进程池
+            ~ ThreadPoolExecutor
+            ~ ProcessPoolExecutor
+                - submit(func, *args)：提交单个任务到线程池/进程池
+                - map(func, iterable)：提交一组任务到线程池/进程池
+
+~ 代码安全
+
+    ~ 常见安全漏洞
+
+    ~ Web应用安全
+
+    ~ 一些安全策略
+
+~ 项目架构
+
+    ~ MVC架构模式
+
+    ~ 事件驱动编程
+
+    ~ 微服务架构
+        - 服务化架构：
+            ~ SOA - Service-Oriented Architecture
+            ~ SasS - Software as Service
+            ~ PasS - Platform as Service
+            ~ IasS - Infrastructure as Service
+        - 实现服务化架构的方式：
+            ~ RPC / RMI - Nameko
+            ~ WebService - SOAP
+            ~ RESTful - 服务注册/ 服务发现 / 服务负载均衡 / 服务熔断 / 消息总线
+
+~ 补充知识点
+    ~ 编程语言的类型：
+        ~ 编译型语言 - C、C++、Go - 编译器（gcc、g++、go build）
+            - 编译 ---> 链接 ---> 可执行程序（二进制）---> 运行
+        ~ 解释型语言 - Basic / Python - 解释器（python、python3）
+            - 编译 ---> 字节码（PyCodeObject）---> 虚拟机 ---> 运行
+        ~ Java和C#的处理方式是先编译再解释执行
+            - 编译：Java源代码 ---> 字节码（JVM能够识别的指令）
+            - 解释：启动JVM执行字节码（可能还有JIT优化）
+
+    ~ 安装tldr ---> 更简单明了的帮助手册
+        ~ yum install -y nodejs
+        ~ npm config set registry http://registry.npm.taobao.org/
+        ~ npm install -g tldr
+
+        ~ tldr sysctl

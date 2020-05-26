@@ -686,3 +686,64 @@ python manage.py db migrate
 #### (5) 执行迁移(更新数据库)
 
 python manage.py db upgrade
+
+## 九、分页
+
+```
+pagination 
+	原生
+	persons = Person.query.offset((page_num -1)* per_page).limit(per_page)
+	分页器
+	参数(page,page_per,False(是否抛异常))
+	per_pagination = Person.query.paginate(page_num,per_page,False)
+	返回值：
+		Pagination:分页对象，包含了所有的分页信息
+	Pagination:
+        属性：
+            page:当前页码
+            per_page:每页的条数，默认为20条
+            pages:总页页数
+            total:总条数
+            prev_num:上一页的页码
+            next_num:下一页的页码
+            has_prev:是否有上一页
+            has_next:是否有下一页
+        方法：
+        	iter_pages:返回一个迭代器，在分页导航条上显示页码列表，显示不完时返回None
+        	prev:上一页的分页对象
+        	next:下一页的分页对象	
+```
+
+```
+{# 分页显示的宏 #}
+{% macro pagination_widget(pagination, endpoint) %}
+    <ul class="pagination">
+        <li{% if not pagination.has_prev %} class="disabled"{% endif %}>
+            <a href="{% if pagination.has_prev %}{{ url_for(endpoint,page = pagination.page - 1, **kwargs) }}
+            {% else %}#{% endif %}">&laquo;
+            </a>
+        </li>
+        {% for p in pagination.iter_pages() %}
+            {% if p %}
+                {% if p == pagination.page %}
+                    <li class="active">
+                        <a href="{{ url_for(endpoint, page = p, **kwargs) }}">{{ p }}</a>
+                    </li>
+                {% else %}
+                <li>
+                    <a href="{{ url_for(endpoint, page = p, **kwargs) }}">{{ p }}</a>
+                </li>
+                {% endif %}
+            {% else %}
+            <li class="disabled">
+                <a href="#">&hellip;</a>
+            </li>
+            {% endif %}
+        {% endfor %}
+        <li{% if not pagination.has_next %} class="disabled"{% endif %}>
+            <a href="{% if pagination.has_next %}{{ url_for(endpoint,page = pagination.page + 1, **kwargs) }}{% else %}#{% endif %}">&raquo;</a>
+        </li>
+    </ul>
+{% endmacro %}
+```
+
