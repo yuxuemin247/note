@@ -118,7 +118,7 @@ flask-login是一个专门用来管理理用户登录退出的扩展库
 
   ```
    状态切换:
-  login_user # 登录   
+  login_user(user) # 登录   
   #登录成功以后，需要将登录状态保存到 session 中，比如：session['uid'] = user.id
   # 使用 flask-login 的 login_user() 就会帮我们完成上述工作
   

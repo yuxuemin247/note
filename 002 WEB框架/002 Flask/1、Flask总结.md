@@ -790,7 +790,11 @@ request.method
 		- 将ctx删除
 ```
 
-程序运行，两个LocalStack()对象，一个里面放request和session，另一个放g和`current_app` 
+程序运行，两个LocalStack()对象，一个里面放request和session，另一个放g和`current_app`
+
+```
+在新开的一个线程中不能直接使用current_app，要app =current_app._get_current_object()，传递app
+```
 
 ## 14.g对象
 
