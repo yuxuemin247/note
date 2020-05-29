@@ -203,6 +203,12 @@ PS: settings.py文件默认路径要放在程序root_path目录，如果instance
 
 ```python
 @app.route('/detail/<int:nid>',methods=['GET'],endpoint='detail')
+def xxx()
+	pass
+class xxx()
+	pass
+app.add_url_rule('/test',endpoint='test',view_func=xxx.as_view('test'))
+
 ```
 
 ### 默认转换器

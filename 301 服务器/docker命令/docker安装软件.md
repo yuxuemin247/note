@@ -8,7 +8,7 @@ docker run -d -p 3307:3306  --name mysql-master -V /root/docker/mysql/master/con
 ##### 2、postgresql
 
 ```
-docker run --name postgres1 -p 54321:5432 -e POSTGRES_PASSWORD=password  -d postgres:9.4
+docker run --name postgres1 -p 54321:5432 -e POSTGRES_PASSWORD=password   -d postgres:9.4
 ```
 
 ##### 3、ES
@@ -23,5 +23,6 @@ discovery=single-node
 ##### 4、redis
 
 ```
-docker run -itd --name redis-test -p 6379:6379 redis
+docker run -d --name redis-test -p 6379:6379 redis
+docker run -d --name gw_redis -p 16379:6379 redis --requirepass "redis"   指定密码
 ```
