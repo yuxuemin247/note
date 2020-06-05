@@ -32,3 +32,4 @@
   4. 进入zip解压包中,执行python setup.py install
   ```
 
+- 
