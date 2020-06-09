@@ -1,282 +1,1017 @@
-1ã€æ¡ä»¶è¡¨è¾¾å¼è¦æ”¾åœ¨æ–¹æ‹¬å·ä¹‹é—´ï¼Œå¹¶ä¸”è¦æœ‰ç©ºæ ¼ï¼Œä¾‹å¦‚: **[$a==$b]** æ˜¯é”™è¯¯çš„ï¼Œå¿…é¡»å†™æˆ **[ $a == $b ]**ã€‚
+### 1.Shell½âÎöÆ÷
 
-2ã€read å‘½ä»¤ä»Žæ ‡å‡†è¾“å…¥ä¸­è¯»å–ä¸€è¡Œ,å¹¶æŠŠè¾“å…¥è¡Œçš„æ¯ä¸ªå­—æ®µçš„å€¼æŒ‡å®šç»™ shell å˜é‡
+   shellÊÇÒ»¸öÃüÁîÐÐ½âÊÍÆ÷£¬Ëü½ÓÊÕÓÃ»§/Ó¦ÓÃ³ÌÐòÃüÁî£¬È»ºóµ÷ÓÃ²Ù×÷ÏµÍ³ÄÚºË
+
+- LinuxÌá¹©µÄShell½âÎöÆ÷ÓÐ£º
+
+  ```
+  [root@yu ~]# cat /etc/shells 
+  /bin/sh
+  /bin/bash
+  /usr/bin/sh
+  /usr/bin/bash
+  ```
+
+- bashºÍshµÄ¹ØÏµ
+  
+  ```
+  [root@yu bin]# ll | grep bash
+  -rwxr-xr-x    1 root root     964536 Apr  1 10:17 bash
+  lrwxrwxrwx    1 root root         10 May 11 17:05 bashbug -> bashbug-64
+  -rwxr-xr-x    1 root root       6964 Apr  1 10:17 bashbug-64
+  lrwxrwxrwx    1 root root          4 May 11 17:05 sh -> bash
+  ```
+
+- CentosÄ¬ÈÏµÄ½âÎöÆ÷ÊÇbash
+
+  ```
+  echo $SHELL
+  ```
+
+### 2.Shell½Å±¾
+
+1. ½Å±¾¸ñÊ½
+
+   µÚÒ»ÐÐ#!/bin/bashÖ¸¶¨½âÊÍÆ÷
+
+   ```
+   #!/bin/bash
+   echo "helloworld"
+   ```
+
+2. Ö´ÐÐ·½Ê½
+
+   - ²ÉÓÃbash»òsh+½Å±¾µÄÏà¶ÔÂ·¾¶»ò¾ø¶ÔÂ·¾¶£¨²»ÓÃ¸³Óè½Å±¾Ö´ÐÐÈ¨ÏÞ£©
+
+     ±¾ÖÊÊÇbash½âÎöÆ÷°ïÄãÖ´ÐÐ½Å±¾£¬ËùÒÔ½Å±¾±¾Éí²»ÐèÒªÖ´ÐÐÈ¨ÏÞ¡£
+
+     ```
+     bash hello.sh
+     ```
+
+   - ²ÉÓÃÊäÈë½Å±¾µÄ¾ø¶ÔÂ·¾¶»òÏà¶ÔÂ·¾¶Ö´ÐÐ½Å±¾(±ØÐëÏÈ¸³Óè¿ÉÖ´ÐÐÈ¨ÏÞ+x£©¡¡
+
+     ±¾ÖÊÊÇ½Å±¾ÐèÒª×Ô¼ºÖ´ÐÐ£¬ËùÒÔÐèÒªÖ´ÐÐÈ¨ÏÞ
+
+     ```
+     [root@yu~]# chmod +x hello.sh  
+     [root@yu ~]# ./hello.sh
+     helloworld
+     [root@yu ~]# /root/hello.sh
+     helloworld
+     ```
+
+   - ¶àÃüÁî´¦Àí
+     ÔÚ/rootÄ¿Â¼ÏÂ´´½¨Ò»¸öyu.txt,ÔÚyu.txtÎÄ¼þÖÐÔö¼Ó¡°ÊÀ½çÄãºÃ¡±
+
+     ```
+     #!/bin/bash
+     
+     cd /root	
+     touch yu.txt
+     echo "ÊÀ½çÄãºÃ" > yu.txt 
+     ```
+
+### 3.ShellµÄ±äÁ¿
+
+#### 3.1 ÏµÍ³±äÁ¿
+
+- ³£ÓÃÏµÍ³±äÁ¿
+  $HOME¡¢$PWD¡¢$SHELL¡¢$USERµÈ
+
+  ÏÔÊ¾µ±Ç°ShellÖÐËùÓÐ±äÁ¿£ºset
+
+  ```
+  [root@yu data]# $HOME
+  bash: /root: Is a directory
+  [root@yu data]# $PWD
+  bash: /root/data: Is a directory
+  ```
+
+#### 3.2 ×Ô¶¨Òå±äÁ¿
+
+- »ù±¾Óï·¨
+
+  - ¶¨Òå±äÁ¿£º±äÁ¿=Öµ 
+
+  - ³·Ïú±äÁ¿£ºunset ±äÁ¿
+
+  - ÉùÃ÷¾²Ì¬±äÁ¿£ºreadonly±äÁ¿£¬×¢Òâ£º²»ÄÜunset
+
+  - ¿É°Ñ±äÁ¿ÌáÉýÎªÈ«¾Ö»·¾³±äÁ¿£¬¿É¹©ÆäËûShell³ÌÐòÊ¹ÓÃ
+
+    ```
+    export ±äÁ¿Ãû
+    ```
+
+- ±äÁ¿¶¨Òå¹æÔò
+
+  - µÈºÅÁ½²à²»ÄÜÓÐ¿Õ¸ñ
+
+    ```
+    [root@yu ~]# A=6
+    [root@yu ~]# echo $A
+    6
+    ```
+
+  - ±äÁ¿Ãû³Æ¿ÉÒÔÓÉ×ÖÄ¸¡¢Êý×ÖºÍÏÂ»®Ïß×é³É£¬µ«ÊÇ²»ÄÜÒÔÊý×Ö¿ªÍ·£¬»·¾³±äÁ¿Ãû½¨Òé´óÐ´¡£
+
+  - ÔÚbashÖÐ£¬±äÁ¿Ä¬ÈÏÀàÐÍ¶¼ÊÇ×Ö·û´®ÀàÐÍ£¬ÎÞ·¨Ö±½Ó½øÐÐÊýÖµÔËËã¡£
+
+    ```
+    [root@yu ~]# C=3+2
+    [root@yu ~]# echo $C
+    3+2
+    ```
+
+  - ±äÁ¿µÄÖµÈç¹ûÓÐ¿Õ¸ñ£¬ÐèÒªÊ¹ÓÃË«ÒýºÅ»òµ¥ÒýºÅÀ¨ÆðÀ´¡£
+
+    ```
+    [root@yu ~]# D="i am"
+    [root@yu ~]# echo $D
+    i am
+    ```
+
+#### 3.3 ÌØÊâ±äÁ¿£º$n
+
+- »ù±¾Óï·¨
+  	$n£¨¹¦ÄÜÃèÊö£ºnÎªÊý×Ö£¬$0´ú±í¸Ã½Å±¾Ãû³Æ£¬$1-$9´ú±íµÚÒ»µ½µÚ¾Å¸ö²ÎÊý£¬Ê®ÒÔÉÏµÄ²ÎÊý£¬Ê®ÒÔÉÏµÄ²ÎÊýÐèÒªÓÃ´óÀ¨ºÅ°üº¬£¬Èç${10}£©
+
+  ```
+  [root@yu data]# vi t1.sh
+  #£¡/bin/bash
+  echo $0
+  echo $1 $2
+  [root@yu data]# sh t1.sh  0 1
+  t1.sh
+  0 1
+  ```
+
+#### 3.4 ÌØÊâ±äÁ¿£º$#
+
+- »ù±¾Óï·¨
+  	$#  (¹¦ÄÜÃèÊö£º»ñÈ¡ÊäÈë²ÎÊý¸öÊý£¬³£ÓÃÓÚÑ­»·£©
+
+#### 3.5 ÌØÊâ±äÁ¿£º$*¡¢$@*
 
 
+	$*	  £¨¹¦ÄÜÃèÊö£ºÕâ¸ö±äÁ¿´ú±íÃüÁîÐÐÖÐËùÓÐµÄ²ÎÊý£¬$*°ÑËùÓÐµÄ²ÎÊý¿´³ÉÒ»¸öÕûÌå£©
+	$@	£¨¹¦ÄÜÃèÊö£ºÕâ¸ö±äÁ¿Ò²´ú±íÃüÁîÐÐÖÐËùÓÐµÄ²ÎÊý£¬²»¹ý$@°ÑÃ¿¸ö²ÎÊýÇø·Ö¶Ô´ý£©
 
-##### shell echoå‘½ä»¤
+#### 3.6 ÌØÊâ±äÁ¿£º$£¿
 
-1ã€æ˜¾ç¤ºæ™®é€šå­—ç¬¦ä¸²
+- »ù±¾Óï·¨
+  ¡¡¡¡$£¿£¨¹¦ÄÜÃèÊö£º×îºóÒ»´ÎÖ´ÐÐµÄÃüÁîµÄ·µ»Ø×´Ì¬¡£Èç¹ûÕâ¸ö±äÁ¿µÄÖµÎª0£¬Ö¤Ã÷ÉÏÒ»¸öÃüÁîÕýÈ·Ö´ÐÐ£»Èç¹ûÕâ¸ö±äÁ¿µÄÖµÎª·Ç0£¨¾ßÌåÊÇÄÄ¸öÊý£¬ÓÉÃüÁî×Ô¼ºÀ´¾ö¶¨£©£¬ÔòÖ¤Ã÷ÉÏÒ»¸öÃüÁîÖ´ÐÐ²»ÕýÈ·ÁË¡££©
+    ¡¡¡¡2£®°¸ÀýÊµ²Ù
+    	£¨1£©ÅÐ¶Ïhelloworld.sh½Å±¾ÊÇ·ñÕýÈ·Ö´ÐÐ
+  [atguigu@hadoop101 datas]$ ./helloworld.sh 
+  hello world
+  [atguigu@hadoop101 datas]$ echo $?
+  0
+
+### 4.ÔËËã·û		
+
+- »ù±¾Óï·¨
+  ¡¡¡¡1¡¢¡°$[ÔËËãÊ½]¡±»ò¡°$((ÔËËãÊ½))¡±
+    ¡¡¡¡2¡¢expr  + , - , \*,  /,  %    ¼Ó£¬¼õ£¬³Ë£¬³ý£¬È¡Óà
+    ¡¡¡¡×¢Òâ£ºexprÔËËã·û¼äÒªÓÐ¿Õ¸ñ
+
+- °¸ÀýÊµ²Ù£º 
+
+  - ¼ÆËã3+2µÄÖµ
+
+    ```
+    [root@yu data]# expr 3 + 2
+    5
+    ```
+
+  - ¼ÆËã£¨2+3£©X4µÄÖµ
+
+    ```
+    [root@yu data]# expr `expr 2 + 3` \* 4
+    20
+    ```
+
+  - ²ÉÓÃ$[ÔËËãÊ½]·½Ê½
+
+    ```
+    [root@yu data]# s=$[(2+3)*4]
+    [root@yu data]# echo $s
+    20
+    ```
+
+### 5.Ìõ¼þÅÐ¶Ï
+
+- »ù±¾Óï·¨
+  ¡¡¡¡[ condition ]£¨×¢ÒâconditionÇ°ºóÒªÓÐ¿Õ¸ñ£©
+    ¡¡¡¡×¢Òâ£ºÌõ¼þ·Ç¿Õ¼´Îªtrue£¬[ yu ]·µ»Øtrue£¬[] ·µ»Øfalse
+
+- Á½¸öÕûÊýÖ®¼ä±È½Ï
+  = ×Ö·û´®±È½Ï
+  -lt Ð¡ÓÚ£¨less than£©			-le Ð¡ÓÚµÈÓÚ£¨less equal£©
+  -eq µÈÓÚ£¨equal£©				-gt ´óÓÚ£¨greater than£©
+  -ge ´óÓÚµÈÓÚ£¨greater equal£©	-ne ²»µÈÓÚ£¨Not equal£©
+
+  ```shell
+  [root@yu ~]# [ 23 -ge 22 ]
+  [root@yu ~]# echo $?
+  0
+  ```
+
+- °´ÕÕÎÄ¼þÈ¨ÏÞ½øÐÐÅÐ¶Ï
+  -r ÓÐ¶ÁµÄÈ¨ÏÞ£¨read£©			-w ÓÐÐ´µÄÈ¨ÏÞ£¨write£©
+  -x ÓÐÖ´ÐÐµÄÈ¨ÏÞ£¨execute£©
+
+  ```shell
+  # yu.txtÊÇ·ñÓÐÐ´È¨ÏÞ
+  [root@yu ~]# [ -w yu.txt ]
+  [root@yu ~]# echo $?
+  0
+  ```
+
+- °´ÕÕÎÄ¼þÀàÐÍ½øÐÐÅÐ¶Ï
+  -f ÎÄ¼þ´æÔÚ²¢ÇÒÊÇÒ»¸ö³£¹æµÄÎÄ¼þ£¨file£©
+  -e ÎÄ¼þ´æÔÚ£¨existence£©		-d ÎÄ¼þ´æÔÚ²¢ÊÇÒ»¸öÄ¿Â¼£¨directory£©
+
+  ```shell
+  # yu1.txtÎÄ¼þÊÇ·ñ´æÔÚ
+  [root@yu ~]# [ -e yu1.txt ]
+  [root@yu ~]# echo $?
+  1
+  ```
+
+- ¶àÌõ¼þÅÐ¶Ï£¨&& ±íÊ¾Ç°Ò»ÌõÃüÁîÖ´ÐÐ³É¹¦Ê±£¬²ÅÖ´ÐÐºóÒ»ÌõÃüÁî£¬|| ±íÊ¾ÉÏÒ»ÌõÃüÁîÖ´ÐÐÊ§°Üºó£¬²ÅÖ´ÐÐÏÂÒ»ÌõÃüÁî£©
+
+  ```
+  [root@yu ~]# [ 23 -ge 22 ] && echo ok || echo "not ok"
+  ok
+  ```
+
+  ```
+  [root@yu ~]# [ 23 -ge 22 ] && [ ] || echo "not ok"
+  not ok
+  ```
+
+### 6.Á÷³Ì¿ØÖÆ
+
+#### 6.1 if ÅÐ¶Ï
+
+-  »ù±¾Óï·¨
+
+  ```
+  if [ Ìõ¼þÅÐ¶ÏÊ½ ];then 
+  ³ÌÐò 
+  fi 
+  
+  
+  »òÕß 
+  if [ Ìõ¼þÅÐ¶ÏÊ½ ] 
+  then 
+  ³ÌÐò
+  fi
+  ```
+
+  ×¢ÒâÊÂÏî£º
+  ¡¡¡¡1¡¢[ Ìõ¼þÅÐ¶ÏÊ½ ]£¬ÖÐÀ¨ºÅºÍÌõ¼þÅÐ¶ÏÊ½Ö®¼ä±ØÐëÓÐ¿Õ¸ñ
+  ¡¡¡¡2¡¢ifºóÒªÓÐ¿Õ¸ñ
+
+- °¸Àý
+  ¡¡¡¡£¨1£©ÊäÈëÒ»¸öÊý×Ö£¬Èç¹ûÊÇ1£¬ÔòÊä³öyu£¬Èç¹ûÊÇ2£¬ÔòÊä³öxue£¬Èç¹ûÊÇÆäËü£¬Ê²Ã´Ò²²»Êä³ö¡£
+
+  ```
+  [root@yu data]# vi if.sh
+  #!/bin/bash
+  
+  if [ $1 -eq 1 ];then
+  echo 1
+  elif [ $1 -eq 2 ];then
+  echo 2
+  fi
+  ```
+
+#### 6.2 case Óï¾ä
+
+- »ù±¾Óï·¨
+
+  ```shell
+  case $±äÁ¿Ãû in 
+  "Öµ1"£© 
+  Èç¹û±äÁ¿µÄÖµµÈÓÚÖµ1£¬ÔòÖ´ÐÐ³ÌÐò1 
+  ;; 
+  "Öµ2"£© 
+  Èç¹û±äÁ¿µÄÖµµÈÓÚÖµ2£¬ÔòÖ´ÐÐ³ÌÐò2 
+  ;; 
+  *£© 
+  Èç¹û±äÁ¿µÄÖµ¶¼²»ÊÇÒÔÉÏµÄÖµ£¬ÔòÖ´ÐÐ´Ë³ÌÐò 
+  ;; 
+  esac
+  ```
+
+  ×¢ÒâÊÂÏî£º
+  1) caseÐÐÎ²±ØÐëÎªµ¥´Ê¡°in¡±£¬Ã¿Ò»¸öÄ£Ê½Æ¥Åä±ØÐëÒÔÓÒÀ¨ºÅ¡°£©¡±½áÊø¡£
+  2) Ë«·ÖºÅ¡°;;¡±±íÊ¾ÃüÁîÐòÁÐ½áÊø£¬Ïàµ±ÓÚjavaÖÐµÄbreak¡£
+  3) ×îºóµÄ¡°*£©¡±±íÊ¾Ä¬ÈÏÄ£Ê½£¬Ïàµ±ÓÚjavaÖÐµÄdefault¡£
+
+- °¸Àý
+  ÊäÈëÒ»¸öÊý×Ö£¬Èç¹ûÊÇ1£¬ÔòÊä³ö1£¬Èç¹ûÊÇ2£¬ÔòÊä³ö2£¬Èç¹ûÊÇÆäËü£¬Êä³ö3¡£
+
+  ```
+  #!/bin/bash
+  
+  case $1 in
+  1)
+  echo 1
+  ;;
+  2)
+  echo 2
+  ;;
+  *)
+  echo 3
+  ;;
+  esac
+  ```
+
+#### 6.3 for Ñ­»·
+
+- »ù±¾Óï·¨1
+
+  ```
+  for (( ³õÊ¼Öµ;Ñ­»·¿ØÖÆÌõ¼þ;±äÁ¿±ä»¯ )) 
+  do 
+      ³ÌÐò   
+  done
+  ```
+
+- °¸Àý
+  ´Ó1¼Óµ½100
+
+  ```
+  #!/bin/bash
+  
+  s=0
+  for ((i=0;i<=100;i++))    #forºó¿Õ²»¿Õ¸ñ¶¼¿ÉÒÔ
+  do
+      s=$[$s+$i]
+  done
+  
+  echo $s
+  ```
+
+- »ù±¾Óï·¨2
+
+  ```
+  for ±äÁ¿ in Öµ1 Öµ2 Öµ3¡­ 
+  do 
+     ³ÌÐò 
+  done
+  ```
+
+- °¸Àý
+  ´òÓ¡ËùÓÐÊäÈë²ÎÊý
+
+  ```
+  #!/bin/bash
+  
+  for i in $*
+  do
+  echo "12 $i"
+  done
+  
+  ```
+  - ±È½Ï$*ºÍ$@Çø±ð
+
+    ```
+    $*ºÍ$@¶¼±íÊ¾´«µÝ¸øº¯Êý»ò½Å±¾µÄËùÓÐ²ÎÊý£¬²»±»Ë«ÒýºÅ¡°¡±°üº¬Ê±£¬¶¼ÒÔ$1 $2 ¡­$nµÄÐÎÊ½Êä³öËùÓÐ²ÎÊý£¬ÍêÈ«ÏàÍ¬
+    ```
+
+    ```
+    µ±ËüÃÇ±»Ë«ÒýºÅ¡°¡±°üº¬Ê±£¬¡°$*¡±»á½«ËùÓÐµÄ²ÎÊý×÷ÎªÒ»¸öÕûÌå£¬ÒÔ¡°$1 $2 ¡­$n¡±µÄÐÎÊ½Êä³öËùÓÐ²ÎÊý£»¡°$@¡±»á½«¸÷¸ö²ÎÊý·Ö¿ª£¬ÒÔ¡°$1¡± ¡°$2¡±¡­¡±$n¡±µÄÐÎÊ½Êä³öËùÓÐ²ÎÊý¡£
+    ```
+
+#### 6.4 while Ñ­»·
+
+- »ù±¾Óï·¨
+
+  ```
+  while [ Ìõ¼þÅÐ¶ÏÊ½ ] 
+  do 
+     ³ÌÐò
+  done
+  ```
+
+- °¸Àý
+  ´Ó1¼Óµ½100
+
+  ```
+  #!/bin/bash
+  
+  i=1
+  s=0
+  while [ $i -le 100 ]
+  do
+    s=$[$i+$s]
+    i=$[$i+1]
+  done
+  
+  echo $s
+  ```
+
+### 7.read¶ÁÈ¡¿ØÖÆÌ¨ÊäÈë
+
+- »ù±¾Óï·¨
+  	read(Ñ¡Ïî)(²ÎÊý)
+    	Ñ¡Ïî£º-p£ºÖ¸¶¨¶ÁÈ¡ÖµÊ±µÄÌáÊ¾·û£»
+                  -t£ºÖ¸¶¨¶ÁÈ¡ÖµÊ±µÈ´ýµÄÊ±¼ä£¨Ãë£©¡£
+     ²ÎÊý£ºÖ¸¶¨¶ÁÈ¡ÖµµÄ±äÁ¿Ãû
+
+- °¸ÀýÊµ²Ù
+  ÌáÊ¾5ÃëÄÚ£¬¶ÁÈ¡¿ØÖÆÌ¨ÊäÈë£¬²¢¸³Öµ¸øname
+
+  ```
+  #!/bin/bash
+  
+  read -t 5 -p "ÇëÔÚ5ÃëÄÚÊäÈëÄãµÄÃû×Ö"  name
+  
+  echo "$name"
+  ```
+
+### 8.º¯Êý
+
+#### 8.1 ÏµÍ³º¯Êý
+
+- basename»ù±¾Óï·¨(»ñµÃÎÄ¼þÃû)
+  ¡¡¡¡basename [string / pathname] [suffix]  	£¨¹¦ÄÜÃèÊö£ºbasenameÃüÁî»áÉ¾µôËùÓÐµÄÇ°×º°üÀ¨×îºóÒ»¸ö£¨¡®/¡¯£©×Ö·û£¬È»ºó½«×Ö·û´®ÏÔÊ¾³öÀ´
+    ¡¡¡¡Ñ¡Ïî£º
+    ¡¡¡¡suffixÎªºó×º£¬Èç¹ûsuffix±»Ö¸¶¨ÁË£¬basename»á½«pathname»òstringÖÐµÄsuffixÈ¥µô¡£
+
+- °¸Àý
+  »ñÈ¡/root/data/t1.txtÂ·¾¶µÄÎÄ¼þÃû³Æ
+
+  ```
+  [root@yu data]# basename /root/data/t1.txt 
+  t1.txt
+  #È¥µôºó×º
+  [root@yu data]# basename /root/data/t1.txt  .txt  
+  t1
+  ```
+
+- dirname»ù±¾Óï·¨(»ñÈ¡ÎÄ¼þÂ·¾¶,Ä¿Â¼Â·¾¶)
+  dirname ÎÄ¼þ¾ø¶ÔÂ·¾¶	£¨¹¦ÄÜÃèÊö£º´Ó¸ø¶¨µÄ°üº¬¾ø¶ÔÂ·¾¶µÄÎÄ¼þÃûÖÐÈ¥³ýÎÄ¼þÃû£¨·ÇÄ¿Â¼µÄ²¿·Ö£©£¬È»ºó·µ»ØÊ£ÏÂµÄÂ·¾¶£¨Ä¿Â¼µÄ²¿·Ö£©£©
+
+- °¸ÀýÊµ²Ù
+  »ñÈ¡t1.txtÎÄ¼þµÄÂ·¾¶
+
+  ```
+  [root@yu data]# dirname  /root/data/t1.txt     #Òª¾ø¶ÔÂ·¾¶
+  /root/data
+  ```
+
+#### 8.2 ×Ô¶¨Òåº¯Êý
+
+- »ù±¾Óï·¨
+
+  ```
+  [ function ] funname()
+  {
+  Action;
+  [return int;]
+  }
+  funname
+  ```
+
+?       ±ØÐëÔÚµ÷ÓÃº¯ÊýµØ·½Ö®Ç°£¬ÏÈÉùÃ÷º¯Êý£¬shell½Å±¾ÊÇÖðÐÐÔËÐÐ¡£²»»áÏñÆäËüÓïÑÔÒ»ÑùÏÈ±àÒë¡£
+?       º¯Êý·µ»ØÖµ£¬Ö»ÄÜÍ¨¹ý$?ÏµÍ³±äÁ¿»ñµÃ£¬¿ÉÒÔÏÔÊ¾¼Ó£ºreturn·µ»Ø£¬Èç¹û²»¼Ó£¬½«ÒÔ×îºóÒ»ÌõÃüÁîÔËÐÐ½á¹û£¬      ×÷Îª·µ»ØÖµ¡£returnºó¸úÊýÖµn(0-255)
+
+- °¸Àý
+  ¼ÆËãÁ½¸öÊäÈë²ÎÊýµÄºÍ
+
+  ```
+  #!/bin/bash
+  
+  sum(){
+  s=0
+  s=$[$1+$2]
+  echo $s
+  }
+  sum $1 $2
+  
+  [root@yu data]# sh fun.sh 1 2
+  3
+  ```
+
+### 9.Shell¹¤¾ß£¨ÖØµã£©
+
+#### 9.1 cut
+
+¡¡¡¡cutµÄ¹¤×÷¾ÍÊÇ¡°¼ô¡±£¬¾ßÌåµÄËµ¾ÍÊÇÔÚÎÄ¼þÖÐ¸ºÔð¼ôÇÐÊý¾ÝÓÃµÄ¡£cut ÃüÁî´ÓÎÄ¼þµÄÃ¿Ò»ÐÐ¼ôÇÐ×Ö½Ú¡¢×Ö·ûºÍ×Ö¶Î²¢½«ÕâÐ©×Ö½Ú¡¢×Ö·ûºÍ×Ö¶ÎÊä³ö¡£
+
+- »ù±¾ÓÃ·¨
+  cut [Ñ¡Ïî²ÎÊý]  filename
+  ËµÃ÷£ºÄ¬ÈÏ·Ö¸ô·ûÊÇÖÆ±í·û
+  Ñ¡Ïî²ÎÊý£º -f    ÁÐºÅ£¬ÌáÈ¡µÚ¼¸ÁÐ
+  					-d   ·Ö¸ô·û£¬°´ÕÕÖ¸¶¨·Ö¸ô·û·Ö¸îÁÐ 
+
+- °¸Àý
+
+  - Êý¾Ý×¼±¸
+
+    ```
+    [root@yu data]# vi cut.txt
+    
+    good day 1
+    good day 2
+    study up 3¡¡
+    ```
+
+  - ÇÐ¸îcut.txtµÚÒ»ÁÐ
+
+    ```
+    [root@yu data]# cut -d " " -f 1 cut.txt 
+    good
+    good
+    study¡¡
+    ```
+
+  - ÇÐ¸îcut.txtµÚ¶þ¡¢ÈýÁÐ
+
+    ```
+    [root@yu data]# cut -d " " -f 2,3 cut.txt 
+    day 1
+    day 2
+    up 3¡¡
+    ```
+
+  - ÔÚcut.txtÎÄ¼þÖÐÇÐ¸î³östudy
+
+    ```
+    [root@yu data]# cat cut.txt | grep "study" | cut -d " " -f 1
+    study
+    ```
+
+  - Ñ¡È¡ÏµÍ³PATH±äÁ¿Öµ£¬µÚ2¸ö¡°£º¡±¿ªÊ¼ºóµÄËùÓÐÂ·¾¶£º
+
+    ```
+    [root@yu data]# echo $PATH |cut -d : -f 3-
+    [root@yu data]# echo $PATH
+    /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin
+    [root@yu data]# echo $PATH |cut -d : -f 3-
+    /usr/sbin:/usr/bin:/root/bin
+    ```
+
+  - ÇÐ¸îifconfig ºó´òÓ¡µÄIPµØÖ·
+
+    ```
+    [root@yu data]# ifconfig eth0 | grep "inet addr" | cut -d: -f 2 | cut -d" " -f1
+    192.168.1.102
+    ```
+
+#### 9.2 sed
+
+¡¡¡¡sedÊÇÒ»ÖÖÁ÷±à¼­Æ÷£¬ËüÒ»´Î´¦ÀíÒ»ÐÐÄÚÈÝ¡£´¦ÀíÊ±£¬°Ñµ±Ç°´¦ÀíµÄÐÐ´æ´¢ÔÚÁÙÊ±»º³åÇøÖÐ£¬³ÆÎª¡°Ä£Ê½¿Õ¼ä¡±£¬½Ó×ÅÓÃsedÃüÁî´¦Àí»º³åÇøÖÐµÄÄÚÈÝ£¬´¦ÀíÍê³Éºó£¬°Ñ»º³åÇøµÄÄÚÈÝËÍÍùÆÁÄ»¡£½Ó×Å´¦ÀíÏÂÒ»ÐÐ£¬ÕâÑù²»¶ÏÖØ¸´£¬Ö±µ½ÎÄ¼þÄ©Î²¡£**ÎÄ¼þÄÚÈÝ²¢Ã»ÓÐ¸Ä±ä**£¬³ý·ÇÄãÊ¹ÓÃÖØ¶¨Ïò´æ´¢Êä³ö¡£
+
+- »ù±¾ÓÃ·¨
+  sed [Ñ¡Ïî²ÎÊý]  ¡®command¡¯  filename
+
+- Ñ¡Ïî²ÎÊý
+  -e   Ö±½ÓÔÚÖ¸ÁîÁÐÄ£Ê½ÉÏ½øÐÐsedµÄ¶¯×÷±à¼­¡£
+
+- ÃüÁî¹¦ÄÜÃèÊö
+  a   ÐÂÔö£¬aµÄºóÃæ¿ÉÒÔ½Ó×Ö´®£¬ÔÚÏÂÒ»ÐÐ³öÏÖ
+  d  É¾³ý
+  s   ²éÕÒ²¢Ìæ»» 
+
+- °¸Àý
+
+  - Êý¾Ý×¼±¸
+
+    ```
+    [root@yu data]# vi sed.txt
+    good day
+    good day
+    study up
+    ```
+
+  - ½«¡°Äã ºÃ¡±Õâ¸öµ¥´Ê²åÈëµ½sed.txtµÚ¶þÐÐÏÂ£¬´òÓ¡¡£
+
+    ```
+    [root@yu data]# sed '2a "ÄãºÃ"' sed.txt 
+    good day
+    good day
+    "ÄãºÃ"
+    study up
+    ```
+
+    ×¢Òâ£ºÎÄ¼þ²¢Ã»ÓÐ¸Ä±ä
+
+  - É¾³ýsed.txtÎÄ¼þËùÓÐ°üº¬goodµÄÐÐ
+
+    ```
+    [root@yu data]# sed '/good/d' sed.txt 
+    study up
+    ```
+
+  - ½«sed.txtÎÄ¼þÖÐgoodÌæ»»Îªwell
+
+    ```
+    [root@yu data]# sed 's/good/well/g' sed.txt 
+    well day
+    well day
+    study up
+    ```
+
+    ×¢Òâ£º¡®g¡¯±íÊ¾global£¬È«²¿Ìæ»»
+
+  - ½«sed.txtÎÄ¼þÖÐµÄµÚ¶þÐÐÉ¾³ý²¢½«goodÌæ»»Îªwell
+
+    ```
+    [root@yu data]# sed -e '2d' -e 's/good/well/g' sed.txt 
+    well day
+    study up
+    ```
+
+#### 9.3 awk
+
+¡¡¡¡Ò»¸öÇ¿´óµÄÎÄ±¾·ÖÎö¹¤¾ß£¬°ÑÎÄ¼þÖðÐÐµÄ¶ÁÈë£¬ÒÔ¿Õ¸ñÎªÄ¬ÈÏ·Ö¸ô·û½«Ã¿ÐÐÇÐÆ¬£¬ÇÐ¿ªµÄ²¿·ÖÔÙ½øÐÐ·ÖÎö´¦Àí¡£
+
+- »ù±¾ÓÃ·¨
+  awk [Ñ¡Ïî²ÎÊý]  ¡®pattern1{action1}   pattern2{action2}...¡¯  filename
+  pattern£º±íÊ¾AWKÔÚÊý¾ÝÖÐ²éÕÒµÄÄÚÈÝ£¬¾ÍÊÇÆ¥ÅäÄ£Ê½
+  action£ºÔÚÕÒµ½Æ¥ÅäÄÚÈÝÊ±ËùÖ´ÐÐµÄÒ»ÏµÁÐÃüÁî
+
+    **¡®pattern1{action1}¡¯** ÊÇµ¥ÒýºÅ²»ÊÇË«ÒýºÅ
+
+- Ñ¡Ïî²ÎÊýËµÃ÷
+  -F : Ö¸¶¨ÊäÈëÎÄ¼þÕÛ·Ö¸ô·û
+  -v : ¸³ÖµÒ»¸öÓÃ»§¶¨Òå±äÁ¿
+
+- °¸ÀýÊµ²Ù
+
+  - Êý¾Ý×¼±¸
+
+    ```
+    [root@yu data]# cp /etc/passwd ./
+    [root@yu data]# cat passwd
+    ```
+
+  - ËÑË÷passwdÎÄ¼þÒÔroot¹Ø¼ü×Ö¿ªÍ·µÄËùÓÐÐÐ£¬²¢Êä³ö¸ÃÐÐµÄµÚ7ÁÐ¡£
+
+    ```
+    [root@yu data]# awk -F : '/^root/{print $7}' passwd 
+    /bin/bash
+    ```
+
+    ×¢Òâ£ºÖ»ÓÐÆ¥ÅäÁËpatternµÄÐÐ²Å»áÖ´ÐÐaction
+
+  - ËÑË÷passwdÎÄ¼þÒÔroot¹Ø¼ü×Ö¿ªÍ·µÄËùÓÐÐÐ£¬²¢Êä³ö¸ÃÐÐµÄµÚ1ÁÐºÍµÚ7ÁÐ£¬ÖÐ¼äÒÔ¡°£¬¡±ºÅ·Ö¸î¡£
+
+    ```
+    [root@yu data]# awk -F : '/^root/{print $1,$7}' passwd 
+    root /bin/bash
+    ```
+
+  - Ö»ÏÔÊ¾/etc/passwdµÄµÚÒ»ÁÐºÍµÚÆßÁÐ£¬ÒÔ¶ººÅ·Ö¸î£¬ÇÒÔÚËùÓÐÐÐÇ°ÃæÌí¼ÓÁÐÃûuser£¬shell¡£ÔÚ×îºóÒ»ÐÐÌí¼Ó"hello,world"¡£
+
+    ```
+    [root@yu data]# awk -F : 'BEGIN{print "user,path"} {print $1","$7} END{print "hello,world"}' passwd 
+    user,path
+    root,/bin/bash
+    bin,/sbin/nologin
+    dockerroot,/sbin/nologin
+    hello,world
+    ```
+
+    ×¢Òâ£ºBEGIN ÔÚËùÓÐÊý¾Ý¶ÁÈ¡ÐÐÖ®Ç°Ö´ÐÐ£»END ÔÚËùÓÐÊý¾ÝÖ´ÐÐÖ®ºóÖ´ÐÐ¡£
+
+  - ½«passwdÎÄ¼þÖÐµÄÓÃ»§idÔö¼ÓÊýÖµ1²¢Êä³ö
+
+    ```
+    [root@yu data]# awk -F: '{print $3+1}' passwd
+    »ò
+    [root@yu data]# awk -v i=1 -F: '{print $3+1}' passwd
+    ```
+
+- awkµÄÄÚÖÃ±äÁ¿
+
+  ±äÁ¿
+  FILENAME    ÎÄ¼þÃû
+  NR                 ÒÑ¶ÁµÄ¼ÇÂ¼Êý
+  NF                  ä¯ÀÀ¼ÇÂ¼µÄÓòµÄ¸öÊý£¨ÇÐ¸îºó£¬ÁÐµÄ¸öÊý£©
+
+- °¸ÀýÊµ²Ù
+
+  - Í³¼ÆpasswdÎÄ¼þÃû£¬Ã¿ÐÐµÄÐÐºÅ£¬Ã¿ÐÐµÄÁÐÊý
+
+    ```
+    [root@yu data]#  awk -F: '{print "filename:"  FILENAME ", linenumber:" NR  ",columns:" NF}' passwd 
+    filename:passwd, linenumber:1,columns:7
+    filename:passwd, linenumber:2,columns:7
+    ```
+
+  - ÇÐ¸îIP
+
+    ```
+    [root@yu data]# ifconfig eth0| grep "inet" | awk -F " " '{print $2}'
+    172.26.31.191
+    ```
+
+  - ²éÑ¯sed.txtÖÐ¿ÕÐÐËùÔÚµÄÐÐºÅ
+
+    ```
+    [root@yu data]# awk '/^$/{print NR}' sed.txt 
+    4
+    ```
+
+#### 9.4 sort
+
+¡¡¡¡sortÃüÁîÊÇÔÚLinuxÀï·Ç³£ÓÐÓÃ£¬Ëü½«ÎÄ¼þ½øÐÐÅÅÐò£¬²¢½«ÅÅÐò½á¹û±ê×¼Êä³ö¡£
+
+- »ù±¾Óï·¨
+  sort(Ñ¡Ïî)(²ÎÊý)
+  Ñ¡Ïî
+  -n   ÒÀÕÕÊýÖµµÄ´óÐ¡ÅÅÐò
+  -r   ÒÔÏà·´µÄË³ÐòÀ´ÅÅÐò
+  -t   ÉèÖÃÅÅÐòÊ±ËùÓÃµÄ·Ö¸ô×Ö·û
+  -k   Ö¸¶¨ÐèÒªÅÅÐòµÄÁÐ
+  ²ÎÊý£ºÖ¸¶¨´ýÅÅÐòµÄÎÄ¼þÁÐ±í
+
+- °¸ÀýÊµ²Ù
+
+  - Êý¾Ý×¼±¸
+
+    ```
+    [root@yu data]# vim sort.sh
+    bb:40:5.4
+    bd:20:4.2
+    xz:50:2.3
+    cls:10:3.5
+    ss:30:1.6
+    ```
+
+  - °´ÕÕ¡°: ¡±·Ö¸îºóµÄµÚÈýÁÐµ¹ÐòÅÅÐò¡£
+
+    ```
+    [root@yu data]# sort -t : -nrk 3 sort.sh 
+    bb:40:5.4
+    bd:20:4.2
+    cls:10:3.5
+    xz:50:2.3
+    ss:30:1.6
+    ```
+
+#### 9.5 echoÃüÁî  
+
+1¡¢ÏÔÊ¾ÆÕÍ¨×Ö·û´®
 
 ```
 echo "It is a test"           # It is a test
 ```
 
-2ã€æ˜¾ç¤ºè½¬ä¹‰å­—ç¬¦
+2¡¢ÏÔÊ¾×ªÒå×Ö·û
 
 ```
 echo "\"Hello World\""        # "It is a test"
 ```
 
-3ã€æ˜¾ç¤ºå˜é‡
-
-readå‘½ä»¤ä»Žæ ‡å‡†è¾“å…¥è¯»å–ä¸€è¡Œï¼Œå¹¶æŠŠè¾“å…¥è¡Œçš„æ¯ä¸ªå­—æ®µçš„å€¼æŒ‡å®šç»™shellå˜é‡
+3¡¢ÏÔÊ¾±äÁ¿
 
 ```
-#!/bin/sh
-read name
 echo "$name is xxx"
 ```
 
-```
-sh test.sh
-yu         #æ ‡å‡†è¾“å…¥
-yu is xxx  #è¾“å‡º
-```
-
-4ã€è½¬ä¹‰
+4¡¢×ªÒå
 
 ```
-echo -e "OK! \n"       #-eå¼€å¯è½¬ä¹‰
-echo "It is a test"
+echo -e "OK! \n"      # OK! 
+echo  "Ok! \n"        # OK! \n
 
-
-echo -e "OK! \c" # -e å¼€å¯è½¬ä¹‰ \c ä¸æ¢è¡Œ
-echo "It is a test"
+echo -e "OK! \c" # -e ¿ªÆô×ªÒå \c ÏÂÒ»¸öÏÔÊ¾²»»»ÐÐ
 ```
 
-```
-OK!
-
-It is a test
-OK! It is a test
-```
-
-5ã€æ˜¾ç¤ºç»“æžœé‡å®šå‘è‡³æ–‡ä»¶
+5¡¢ÏÔÊ¾½á¹ûÖØ¶¨ÏòÖÁÎÄ¼þ
 
 ```
-echo "It is a test" > myfile      #ä¼šè‡ªåŠ¨åˆ›å»ºæ–‡ä»¶
+echo "It is a test" > myfile      #»á×Ô¶¯´´½¨ÎÄ¼þ
 ```
 
-6ã€åŽŸæ ·è¾“å‡ºå­—ç¬¦ä¸²ï¼Œä¸è¿›è¡Œè½¬ä¹‰æˆ–å–å˜é‡(å–å•å¼•å·)
+6¡¢Ô­ÑùÊä³ö×Ö·û´®£¬²»½øÐÐ×ªÒå»òÈ¡±äÁ¿(µ¥ÒýºÅ)
 
 ```
-echo '$name\"'          $name\"
+[root@yu data]# name=yu
+[root@yu data]# echo '$name'
+$name
+[root@yu data]# echo "$name"
+yu
 ```
 
-7ã€æ˜¾ç¤ºå‘½ä»¤æ‰§è¡Œç»“æžœ
+7¡¢ÏÔÊ¾ÃüÁîÖ´ÐÐ½á¹û
 
 ```
 echo `date`
 ```
 
-##### `printf`å‘½ä»¤
+8¡¢printf ÁíÒ»¸öÊä³öÃüÁî
 
-å¦ä¸€ä¸ªè¾“å‡ºå‘½ä»¤ï¼Œ`printf`å‘½ä»¤æ¨¡ä»¿cç¨‹åºåº“(library)é‡Œçš„`printf()`ç¨‹åº
+printf format-string [argument...]
 
-`printf format-string [argument...]`
+- format-string:Îª¸ñÊ½¿ØÖÆ×Ö·û´®£¬arguments:Îª²ÎÊýÁÐ±í
 
-- format-string:ä¸ºæ ¼å¼æŽ§åˆ¶å­—ç¬¦ä¸²
+- ```
+  #!/bin/bash
+  # author:²ËÄñ½Ì³Ì
+  # url:www.runoob.com
+   
+  printf "%-10s %-8s %-4s\n" ÐÕÃû ÐÔ±ð ÌåÖØkg  
+  printf "%-10s %-8s %-4.2f\n" ¹ù¾¸ ÄÐ 66.1234 
+  printf "%-10s %-8s %-4.2f\n" Ñî¹ý ÄÐ 48.6543 
+  printf "%-10s %-8s %-4.2f\n" ¹ùÜ½ Å® 47.9876 
+  ```
 
-- arguments:ä¸ºå‚æ•°åˆ—è¡¨
+  ```
+  #Ö´ÐÐ½á¹û
+  ÐÕÃû     ÐÔ±ð   ÌåÖØkg
+  ¹ù¾¸     ÄÐ      66.12
+  Ñî¹ý     ÄÐ      48.65
+  ¹ùÜ½     Å®      47.99
+  %s %c %d %f¶¼ÊÇ¸ñÊ½Ìæ´ú·û
+  
+  %-10s Ö¸Ò»¸ö¿í¶ÈÎª10¸ö×Ö·û£¨-±íÊ¾×ó¶ÔÆë£¬Ã»ÓÐÔò±íÊ¾ÓÒ¶ÔÆë£©£¬ÈÎºÎ×Ö·û¶¼»á±»ÏÔÊ¾ÔÚ10¸ö×Ö·û¿íµÄ×Ö·ûÄÚ£¬Èç¹û²»×ãÔò×Ô¶¯ÒÔ¿Õ¸ñÌî³ä£¬³¬¹ýÒ²»á½«ÄÚÈÝÈ«²¿ÏÔÊ¾³öÀ´¡£
+  %-4.2f Ö¸¸ñÊ½»¯ÎªÐ¡Êý£¬ÆäÖÐ.2Ö¸±£Áô2Î»Ð¡Êý¡£
+  ```
+
+### µÚ10ÕÂ ÆóÒµÃæÊÔÌâ
+
+####   10.1 ¾©¶«
+
+- Ê¹ÓÃLinuxÃüÁî²éÑ¯file1ÖÐ¿ÕÐÐËùÔÚµÄÐÐºÅ
+
+  ```
+  [root@yu data]# awk '/^$/{print NR}' file1
+  2
+  ```
+
+- ÓÐÎÄ¼þchengji.txtÄÚÈÝÈçÏÂ:
+    ¡¡¡¡ÕÅÈý 40
+    ¡¡¡¡ÀîËÄ 50
+    ¡¡¡¡ÍõÎå 60
+    ¡¡¡¡Ê¹ÓÃLinuxÃüÁî¼ÆËãµÚ¶þÁÐµÄºÍ²¢Êä³ö
+
+  ```
+  cat chengji.txt | awk -F " " '{sum+=$2} END{print sum}'   #ÕâÀïsum²»Òª$sum
+  ```
+
+####  10.2 ËÑºü&ºÍÑ¶Íø
+
+- Shell½Å±¾ÀïÈçºÎ¼ì²éÒ»¸öÎÄ¼þÊÇ·ñ´æÔÚ£¿Èç¹û²»´æÔÚ¸ÃÈçºÎ´¦Àí£¿
 
   ```
   #!/bin/bash
-  # author:èœé¸Ÿæ•™ç¨‹
-  # url:www.runoob.com
-   
-  printf "%-10s %-8s %-4s\n" å§“å æ€§åˆ« ä½“é‡kg  
-  printf "%-10s %-8s %-4.2f\n" éƒ­é– ç”· 66.1234 
-  printf "%-10s %-8s %-4.2f\n" æ¨è¿‡ ç”· 48.6543 
-  printf "%-10s %-8s %-4.2f\n" éƒ­èŠ™ å¥³ 47.9876 
-  ```
-
-  ```
-  #æ‰§è¡Œç»“æžœ
-  å§“å     æ€§åˆ«   ä½“é‡kg
-  éƒ­é–     ç”·      66.12
-  æ¨è¿‡     ç”·      48.65
-  éƒ­èŠ™     å¥³      47.99
-  %s %c %d %féƒ½æ˜¯æ ¼å¼æ›¿ä»£ç¬¦
   
-  %-10s æŒ‡ä¸€ä¸ªå®½åº¦ä¸º10ä¸ªå­—ç¬¦ï¼ˆ-è¡¨ç¤ºå·¦å¯¹é½ï¼Œæ²¡æœ‰åˆ™è¡¨ç¤ºå³å¯¹é½ï¼‰ï¼Œä»»ä½•å­—ç¬¦éƒ½ä¼šè¢«æ˜¾ç¤ºåœ¨10ä¸ªå­—ç¬¦å®½çš„å­—ç¬¦å†…ï¼Œå¦‚æžœä¸è¶³åˆ™è‡ªåŠ¨ä»¥ç©ºæ ¼å¡«å……ï¼Œè¶…è¿‡ä¹Ÿä¼šå°†å†…å®¹å…¨éƒ¨æ˜¾ç¤ºå‡ºæ¥ã€‚
-  %-4.2f æŒ‡æ ¼å¼åŒ–ä¸ºå°æ•°ï¼Œå…¶ä¸­.2æŒ‡ä¿ç•™2ä½å°æ•°ã€‚
+  if [ -f file.txt ]; then
+     echo "ÎÄ¼þ´æÔÚ!"
+  else
+     echo "ÎÄ¼þ²»´æÔÚ!"
+  fi
+  ```
+
+#### 10.3 ÐÂÀË
+
+- £ºÓÃshellÐ´Ò»¸ö½Å±¾£¬¶ÔÎÄ±¾ÖÐÎÞÐòµÄÒ»ÁÐÊý×ÖÅÅÐò,²¢ÇóºÍ
+
+  ```
+  [root@yu data]# cat test.txt 
+  9
+  8
+  7
+  6
+  5
+  4
+  3
+  2
+  10
+  1
+  ```
+
+  ```
+  [root@yu data]# sort -n test.txt 
+  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+  10
+  ```
+
+  ```
+  [root@yu data]# sort -n test.txt | awk '{sum+=$1;print $1} END{print "sum="sum}'
+  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+  10
+  sum=55
+  ```
+
+#### 10.4 ½ðºÍÍøÂç
+
+- ÇëÓÃshell½Å±¾Ð´³ö²éÕÒµ±Ç°ÎÄ¼þ¼Ð£¨/root/data£©ÏÂËùÓÐµÄÎÄ±¾ÎÄ¼þÄÚÈÝÖÐ°üº¬ÓÐ×Ö·û¡±bin/bash¡±µÄÎÄ¼þÃû³Æ
+
+  ```
+  [root@yu data]# grep -r "bin/bash" /root/data | awk -F : '{print $1}'
+  /root/data/if.sh
+  /root/data/read.sh
+  /root/data/hello.sh
+  ```
+
+#### 10.5 ÆäËû
+
+- ÊäÈëÁ½¸öÕûÊýmºÍn£¬¼ÆËã´Ómµ½nµÄÕûÊýÇóºÍµÄ½á¹û
+
+  ```
+  #!/usr/bin/bash
+  printf 'm = '
+  read m
+  printf 'n = '
+  read n
+  a=$m
+  sum=0
+  while [ $a -le $n ]
+  do
+      sum=$[ sum + a ]
+      a=$[ a + 1 ]
+  done
+  echo ¡¢"½á¹ûÊÇ: $sum"
+  ```
+
+- ×Ô¶¯´´½¨ÎÄ¼þ¼ÐºÍÖ¸¶¨ÊýÁ¿µÄÎÄ¼þ(...)
+
+  ```
+  #!/usr/bin/bash
+  printf 'ÊäÈëÎÄ¼þÃû: '
+  read file
+  printf 'ÊäÈëÎÄ¼þÊýÁ¿(<1000): '
+  read num
+  if [ $num -ge 1000 ]
+  then
+      echo 'ÎÄ¼þÊýÁ¿²»ÄÜ³¬¹ý1000'
+  else
+      if [ -e $dir -a -d $dir ]
+      then
+          rm -rf $dir
+      else
+          if [ -e $dir -a -f $dir ]
+          then
+              rm -f $dir
+          fi
+      fi
+      mkdir -p $dir
+      index=1
+      while [ $index -le $num ]
+      do
+          if [ $index -lt 10 ]
+          then
+              pre='00'
+          elif [ $index -lt 100 ]
+          then
+              pre='0'
+          else
+              pre=''
+          fi
+          touch $dir'/'$file'_'$pre$index
+          index=$[ index + 1 ]
+      done
+  fi
+  ```
+
+- ×Ô¶¯°²×°Ö¸¶¨°æ±¾µÄRedis(...)
+
+  ```
+  #!/usr/bin/bash
+  install_redis() {
+      if ! which redis-server > /dev/null
+      then
+          cd /root
+          wget $1$2'.tar.gz' >> install.log
+          gunzip /root/$2'.tar.gz'
+          tar -xf /root/$2'.tar'
+          cd /root/$2
+          make >> install.log
+          make install >> install.log
+          echo '°²×°Íê³É'
+      else
+          echo 'ÒÑ¾­°²×°¹ýRedis'
+      fi
+  }
+  
+  install_redis 'http://download.redis.io/releases/' $1
   ```
 
   
-
-æµç¨‹æŽ§åˆ¶
-
-if
-
-```
-a=10
-b=20
-if [ $a == $b ]
-then
-   echo "a ç­‰äºŽ b"
-elif [ $a -gt $b ]
-then
-   echo "a å¤§äºŽ b"
-elif [ $a -lt $b ]
-then
-   echo "a å°äºŽ b"
-else
-   echo "æ²¡æœ‰ç¬¦åˆçš„æ¡ä»¶"
-fi
-```
-
-forå¾ªçŽ¯
-
-```
-for var in item1 item2 ... itemN
-do
-    command1
-    command2
-    ...
-    commandN
-done
-
-for loop in 1 2 3 4 5
-do
-    echo "The value is: $loop"
-done
-```
-
-whileå¾ªçŽ¯
-
-```
-while condition
-do
-    command
-done
-
-#!/bin/bash
-int=1
-while(( $int<=5 ))
-do
-    echo $int
-    let "int++"
-done
-```
-
-case
-
-Shell caseè¯­å¥ä¸ºå¤šé€‰æ‹©è¯­å¥ã€‚å¯ä»¥ç”¨caseè¯­å¥åŒ¹é…ä¸€ä¸ªå€¼ä¸Žä¸€ä¸ªæ¨¡å¼ï¼Œå¦‚æžœåŒ¹é…æˆåŠŸï¼Œæ‰§è¡Œç›¸åŒ¹é…çš„å‘½ä»¤ã€‚caseè¯­å¥æ ¼å¼å¦‚ä¸‹ï¼š
-
-```
-echo 'è¾“å…¥ 1 åˆ° 4 ä¹‹é—´çš„æ•°å­—:'
-echo 'ä½ è¾“å…¥çš„æ•°å­—ä¸º:'
-read aNum
-case $aNum in
-    1)  echo 'ä½ é€‰æ‹©äº† 1'
-    ;;
-    2)  echo 'ä½ é€‰æ‹©äº† 2'
-    ;;
-    3)  echo 'ä½ é€‰æ‹©äº† 3'
-    ;;
-    4)  echo 'ä½ é€‰æ‹©äº† 4'
-    ;;
-    *)  echo 'ä½ æ²¡æœ‰è¾“å…¥ 1 åˆ° 4 ä¹‹é—´çš„æ•°å­—'
-    ;;
-esac
-```
-
-`/dev/null `æ–‡ä»¶
-
-```
-command > dev/null
-```
-
-/dev/null æ˜¯ä¸€ä¸ªç‰¹æ®Šçš„æ–‡ä»¶ï¼Œå†™å…¥åˆ°å®ƒçš„å†…å®¹éƒ½ä¼šè¢«ä¸¢å¼ƒï¼›å¦‚æžœå°è¯•ä»Žè¯¥æ–‡ä»¶è¯»å–å†…å®¹ï¼Œé‚£ä¹ˆä»€ä¹ˆä¹Ÿè¯»ä¸åˆ°ã€‚ä½†æ˜¯ /dev/null æ–‡ä»¶éžå¸¸æœ‰ç”¨ï¼Œå°†å‘½ä»¤çš„è¾“å‡ºé‡å®šå‘åˆ°å®ƒï¼Œä¼šèµ·åˆ°"ç¦æ­¢è¾“å‡º"çš„æ•ˆæžœã€‚
-
-å¦‚æžœå¸Œæœ›å±è”½ stdout å’Œ stderrï¼Œå¯ä»¥è¿™æ ·å†™ï¼š
-
-
-
-##### shellç¼–ç¨‹
-
-ä¹‹å‰æˆ‘ä»¬æåˆ°è¿‡ï¼ŒShellæ˜¯ä¸€ä¸ªè¿žæŽ¥ç”¨æˆ·å’Œæ“ä½œç³»ç»Ÿçš„åº”ç”¨ç¨‹åºï¼Œå®ƒæä¾›äº†äººæœºäº¤äº’çš„ç•Œé¢ï¼ˆæŽ¥å£ï¼‰ï¼Œç”¨æˆ·é€šè¿‡è¿™ä¸ªç•Œé¢è®¿é—®æ“ä½œç³»ç»Ÿå†…æ ¸çš„æœåŠ¡ã€‚Shellè„šæœ¬æ˜¯ä¸€ç§ä¸ºShellç¼–å†™çš„è„šæœ¬ç¨‹åºï¼Œæˆ‘ä»¬å¯ä»¥é€šè¿‡Shellè„šæœ¬æ¥è¿›è¡Œç³»ç»Ÿç®¡ç†ï¼ŒåŒæ—¶ä¹Ÿå¯ä»¥é€šè¿‡å®ƒè¿›è¡Œæ–‡ä»¶æ“ä½œã€‚æ€»ä¹‹ï¼Œç¼–å†™Shellè„šæœ¬å¯¹äºŽä½¿ç”¨Linuxç³»ç»Ÿçš„äººæ¥è¯´ï¼Œåº”è¯¥æ˜¯ä¸€é¡¹æ ‡é…æŠ€èƒ½ã€‚
-
-äº’è”ç½‘ä¸Šæœ‰å¤§é‡å…³äºŽShellè„šæœ¬çš„ç›¸å…³çŸ¥è¯†ï¼Œæˆ‘ä¸æ‰“ç®—å†æ­¤å¯¹Shellè„šæœ¬åšä¸€ä¸ªå…¨é¢ç³»ç»Ÿçš„è®²è§£ï¼Œæˆ‘ä»¬é€šè¿‡ä¸‹é¢çš„ä»£ç æ¥æ„Ÿæ€§çš„è®¤è¯†ä¸‹Shellè„šæœ¬å°±è¡Œäº†ã€‚
-
-ä¾‹å­1ï¼šè¾“å…¥ä¸¤ä¸ªæ•´æ•°må’Œnï¼Œè®¡ç®—ä»Žmåˆ°nçš„æ•´æ•°æ±‚å’Œçš„ç»“æžœã€‚
-
-```Shell
-#!/usr/bin/bash
-printf 'm = '
-read m
-printf 'n = '
-read n
-a=$m
-sum=0
-while [ $a -le $n ]
-do
-    sum=$[ sum + a ]
-    a=$[ a + 1 ]
-done
-echo 'ç»“æžœ: '$sum
-```
-
-ä¾‹å­2ï¼šè‡ªåŠ¨åˆ›å»ºæ–‡ä»¶å¤¹å’ŒæŒ‡å®šæ•°é‡çš„æ–‡ä»¶ã€‚
-
-```Shell
-#!/usr/bin/bash
-printf 'è¾“å…¥æ–‡ä»¶å: '
-read file
-printf 'è¾“å…¥æ–‡ä»¶æ•°é‡(<1000): '
-read num
-if [ $num -ge 1000 ]
-then
-    echo 'æ–‡ä»¶æ•°é‡ä¸èƒ½è¶…è¿‡1000'
-else
-    if [ -e $dir -a -d $dir ]
-    then
-        rm -rf $dir
-    else
-        if [ -e $dir -a -f $dir ]
-        then
-            rm -f $dir
-        fi
-    fi
-    mkdir -p $dir
-    index=1
-    while [ $index -le $num ]
-    do
-        if [ $index -lt 10 ]
-        then
-            pre='00'
-        elif [ $index -lt 100 ]
-        then
-            pre='0'
-        else
-            pre=''
-        fi
-        touch $dir'/'$file'_'$pre$index
-        index=$[ index + 1 ]
-    done
-fi
-```
-
-ä¾‹å­3ï¼šè‡ªåŠ¨å®‰è£…æŒ‡å®šç‰ˆæœ¬çš„Redisã€‚
-
-```Shell
-#!/usr/bin/bash
-install_redis() {
-    if ! which redis-server > /dev/null
-    then
-        cd /root
-        wget $1$2'.tar.gz' >> install.log
-        gunzip /root/$2'.tar.gz'
-        tar -xf /root/$2'.tar'
-        cd /root/$2
-        make >> install.log
-        make install >> install.log
-        echo 'å®‰è£…å®Œæˆ'
-    else
-        echo 'å·²ç»å®‰è£…è¿‡Redis'
-    fi
-}
-
-install_redis 'http://download.redis.io/releases/' $1
-```
