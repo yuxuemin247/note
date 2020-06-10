@@ -10,4 +10,32 @@ rabbitmqctl join_cluster <clusterbode> [--ram]  组成集群命令
 rabbitmqctl cluster_status 集群状态
 rabbitmqctl forget_cluster_node [--offline]  摘除节点，忘记节点，失败状态
 
-exchanges  有direct fanout headers topic
+exchanges  有direct   topic  fanout headers
+
+
+什么是生产端的可靠性投递？
+  保障消息的成功发出
+  保障MQ节点的成功接受
+  发送端收到MQ节点(Broker)确认应答
+  完善的消息进行补偿机制
+解决方案一  
+     消息落库，对消息状态进行打标。
+解决方案二
+     消息的延迟投递，做二次确认()，回调检查
+
+幂等性是什么？
+多次相同操作的结果相同
+方案一
+唯一ID+指纹码 机制，利用数据库主键去重
+二、
+利用redis的原子性去实现
+
+
+confirm确认消息实现
+一、在channel开启确认模式： channel.confirmSelect()
+二、 在channel上添加监听： chanel.addconfirmlistener()     
+
+return 消息机制
+return listener 用于处理一些不可路由的消息(当前的exchange不存在或rootingkey有误）
+Mandatory  设置为true(默认为False)
+生产者设置 channel.addReturnListener
