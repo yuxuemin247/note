@@ -10,8 +10,11 @@ rabbitmqctl join_cluster <clusterbode> [--ram]  组成集群命令
 rabbitmqctl cluster_status 集群状态
 rabbitmqctl forget_cluster_node [--offline]  摘除节点，忘记节点，失败状态
 
-exchanges  有direct   topic  fanout headers
-
+exchanges  有direct   topic  fanout headers 。交换机有 持久化、自动删除、internal(exchange内部使用)
+dirct是直连，默认的。生产者的routingkey要与队列绑定routingkey完全一致
+fanout  不处理路由键，只是简单将队列绑定到交换机上。性能最好，不需要路由键匹配
+topic，routingkey与队列模糊匹配。#匹配一个或多个，*匹配一个。
+headers,
 
 什么是生产端的可靠性投递？
   保障消息的成功发出
@@ -39,3 +42,23 @@ return 消息机制
 return listener 用于处理一些不可路由的消息(当前的exchange不存在或rootingkey有误）
 Mandatory  设置为true(默认为False)
 生产者设置 channel.addReturnListener
+
+自定义消费者，设置autoack为flase,手工ACK才会消费下一条数据)。
+
+QOS(服务质量保证)，在手工ACk情况下，如果一定数目的消息（通过基于consume或者channel设置Qos的值）未备确认前，不进行消费新的消息
+BasicQos(消息大小限制，未被确认消息条数，基于消费者还是channel限流)
+重回队列，设置autoack为flase,手工发送nack，消息会重新回到broker队列的最后，重新发送
+
+TTL time to live 生存时间，
+rabbitmq支持消息的过期时间，可以指定从消息发送开始(在properties对消息设置)或者从消息
+入队列开始，
+
+
+DLX Dead-letter-Exchange 死信队列。
+利用DLX,当消息在一个队列中变成死信(dead message) 之后，它能备重新publish 到另一个exchange,这个exchange 就是DLX
+变为死信
+ 1、消息被拒绝。 如消费失败并且不重回队列
+ 2、TTL过期
+ 3、队列达到最大长度
+
+正常的声明exchange，队列，绑定。 只是在有死信的队列上加一个参数 arguments.put("x-dead-letter-exchange",交换机名字)
