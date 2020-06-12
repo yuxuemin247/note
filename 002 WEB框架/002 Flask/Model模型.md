@@ -747,3 +747,203 @@ pagination
 {% endmacro %}
 ```
 
+## 十、模型关系
+
+（1） 一对多
+
+```
+一对多
+class Parent(db.Model):
+    id=db.Column(db.Integer,primary_key=True,autoincrement=True)
+    name=db.Column(db.String(30),unique=True)
+    children=db.relationship("Child",backref="parent",lazy=True)
+
+
+class Child(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), unique=True)
+    parent_id = db.Column(db.Integer, db.ForeignKey('parent.id'))
+    
+    #db.ForeignKey() 用于定义外键，参数：另一方的表名.主键名
+
+relationship函数
+	      sqlalchemy对关系之间提供的一种便利的调用方式，关联不同的表；
+	      第一个参数是关联模型的类名
+backref参数
+          对关系提供反向引用的声明，在Child类上声明新属性的简单方法，之后可以在child.parent来获取这个地址的Parent；
+lazy参数
+          'select'/True（默认值）
+              SQLAlchemy 会在使用一个标准 select 语句时一次性加载数据；
+              会发送两条 SQL 语句，一条查 one 的一方，一条查 many 的一方
+          'joined'/False
+              让 SQLAlchemy 当父级使用 JOIN 语句是，在相同的查询中加载关系；
+              会发送一条 SQL 语句，通过 LEFT JOIN 的方式 查询 one 一方和 many 一方的数据
+          'subquery'
+              类似 'joined' ，但是 SQLAlchemy 会使用子查询；
+          'dynamic'：
+              SQLAlchemy 会返回一个查询对象，在加载这些条目时才进行加载数据，大批量数据查询处理时推荐使用。会发送一条 SQL 语句，只查询 one 一方的数据，
+                        many 一方的关联属性是一个 Query 对象，不会真正执行查询，
+                       在需要时，调用 children.all() 真正去数据库中查询数据
+              
+ForeignKey参数
+	      代表一种关联字段，将两张表进行关联的方式，表示一个parent的外键，设定上必须要能在父表中找到对应的id值
+	      
+添加
+	eg：@blue.route('/add/')
+        def add():
+            p = Parent()
+            p.name = '张三'
+            c = Child()
+            c.name = '张四'
+            c1 = Child()
+            c1.name = '王五'
+            p.children = [c,c1]
+
+            db.session.add(p)
+            db.session.commit()
+
+            return 'add success'
+查
+      eg:
+      主查从 --》 Parent--》Child
+      @blue.route('/getChild/')
+      def getChild():
+          clist = Child.query.filter(Parent.id == 1)
+          for c in clist:
+              print(c.name)
+          return 'welcome to red remonce'
+      从查主
+      @blue.route('/getParent/')
+      def getParent():
+          p = Parent.query.filter(Child.id == 2)
+          print(type(p))
+          print(p[0].name)
+   	  return '开洗'
+```
+
+（2）一对一
+
+```
+一对一
+   一对一需要设置relationship中的uselist=Flase，不能设置 lazy，其他数据库操作一样。
+```
+
+（3）多对多
+
+```
+多对多
+class Group(db.Model):
+    __tablename__ = 'groups'
+     id = db.Column(db.Integer, primary_key=True)
+     name = db.Column(db.String(32), unique=True, nullable=False)
+
+class Student(db.Model):
+    __tablename__ = 'students'
+    
+    id = db.Column(db.Integer, primary_key=True)  # 主键
+    name = db.Column(db.String(16), nullable=False)
+    groups = db.relationship('Group', secondary='student_groups',
+    								backref=db.backref('students', lazy='dynamic'),
+          							lazy='dynamic')
+    # 多对多关系定义，本质是双向的一对多关系
+    # secondary 指定多对多关系中的关系表
+# db.Table()
+# 第一个参数：表名
+# 其他参数：字段定义   
+student_groups = db.Table('student_groups',
+      	db.Column('id', db.Integer, primary_key=True),
+   		db.Column('student_id', db.Integer,db.ForeignKey('students.id')),                         db.Column('group_id', db.Integer, db.ForeignKey('groups.id'))
+                          )    
+eg:视图函数中使用
+@bp.route('/m2m-init/')
+def m2m_init():
+    g1 = Group(name='python')
+    g2 = Group(name='html')
+    g3 = Group(name='golang')
+
+    db.session.add_all([g1, g2, g3])
+    db.session.commit()
+    
+    return 'm2m_init'
+
+
+@bp.route('/m2m-create/')
+def m2m_create():
+    python = Group.query.filter_by(name='python').first()
+    html = Group.query.filter_by(name='html').first()
+    golang = Group.query.filter_by(name='golang').first()
+
+    tom_0 = Student.query.get(1)
+    tom_1 = Student.query.get(2)
+
+    python.students.append(tom_0)
+    
+    tom_1.groups.append(html)
+   
+   db.session.commit()
+    
+    return 'm2m_create'
+
+
+@bp.route('/m2m-delete/')
+def m2m_delete():
+    python = Group.query.filter_by(name='python').first()
+    html = Group.query.filter_by(name='html').first()
+
+    tom_0 = Student.query.get(1)
+    tom_1 = Student.query.get(2)
+
+    # 删除一个不属于 student 对象的 group 会报错
+    # tom_0.groups.remove(python)
+
+    # 清空 html 组内的所有学生
+    html.students = []
+
+    db.session.commit()
+
+    return 'm2m_delete'   
+```
+
+```
+购物车添加
+    @blue.route('/getcollection/')
+	def getcollection():
+          u_id = int(request.args.get('u_id'))
+          m_id = int(request.args.get('m_id'))
+          c = Collection.query.filter(Collection.u_id == u_id).filter_by(m_id = m_id)
+
+          if c.count() > 0:
+              print(c.first().u_id,c.first().m_id)
+              # print(c)
+              # print(type(c))
+              # print('i am if')
+              return '已经添加到了购物车中'
+          else:
+              c1 = Collection()
+              c1.u_id = u_id
+              c1.m_id = m_id
+              db.session.add(c1)
+              db.session.commit()
+              return 'ok'
+```
+
+## 十一、Sqlalchemy优化
+
+```
+@app.after_request
+def af_request(response):
+    for query in get_debug_queries():
+        if query.duration >= 2:
+            current_app.logger.warning(
+                    'Slow query: %s\nParameters: %s\nDuration: %fs\nContext:
+                    %s\n' %(query.statement, query.parameters, query.duration,
+                        query.context)
+                    )
+            return response
+```
+
+这个功能使用after_app_requestq请求钩子实现的，在视图函数处理完成之后执行。Flask把响应对象传给after_app_request处理程序，以防修改响应。
+
+本例中after_app_request只是获取flak_sqlalchemy记录的查询时间并把运行缓慢的的查询写入日志。
+
+默认情况下，get_debug_queries()函数只在调试模式中可用
