@@ -84,7 +84,16 @@
     docker --version
     ```
 
-##### 4、tldr
+#### 4、tldr
+
+#### 5、上传下载文件
+
+- ```
+  yum install -y lrzsz    #安装
+  rz  上传文件
+  sz file 下载文件
+  ```
+  
 
 
 
