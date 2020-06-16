@@ -62,3 +62,10 @@ DLX Dead-letter-Exchange 死信队列。
  3、队列达到最大长度
 
 正常的声明exchange，队列，绑定。 只是在有死信的队列上加一个参数 arguments.put("x-dead-letter-exchange",交换机名字)
+HAporxy 和keeplived 配合rabbitmq实现高可用 
+
+Rabbitmq 异步通信插件 Federation插件，两个集群间通过federation同步，集群内部通过镜像队列同步。federation使用AMQP进行通信
+要启用federation和feaderation manage 两个插件
+
+
+顺序消费：必须保障消息投递到一个队列，并且只有一个消费者(独占模式)
