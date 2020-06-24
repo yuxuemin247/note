@@ -6,8 +6,11 @@ from confluent_kafka import Producer
 p = Producer({'bootstrap.servers': 'mybroker1,mybroker2'})
 
 def delivery_report(err, msg):
+
     """ Called once for each message produced to indicate delivery result.
-        Triggered by poll() or flush(). """
+        Triggered by poll() or flush(). 
+    """
+    
     if err is not None:
         print('Message delivery failed: {}'.format(err))
     else:
@@ -15,15 +18,17 @@ def delivery_report(err, msg):
 
 for data in some_data_source:
     # Trigger any available delivery report callbacks from previous produce() calls
+    
     p.poll(0)
 
     # Asynchronously produce a message, the delivery report callback
     # will be triggered from poll() above, or flush() below, when the message has
-    # been successfully delivered or failed permanently.
+    # been successfully delivered or failed permanently
+    
     p.produce('mytopic', data.encode('utf-8'), callback=delivery_report)
 
-# Wait for any outstanding messages to be delivered and delivery report
-# callbacks to be triggered.
+    # Wait for any outstanding messages to be delivered and delivery      		report
+    # callbacks to be triggered.
 p.flush()
 ```
 
@@ -43,6 +48,7 @@ c = Consumer({
 
 c.subscribe(['KAFKA_ALARM_TOPIC'])   #订阅主题
 
+# poll 中文意思：投票,轮询
 while True:
     msg = c.poll(timeout=1.0)
     if msg is None:
@@ -65,7 +71,7 @@ from confluent_kafka.admin import AdminClient, NewTopic
 
 a = AdminClient({'bootstrap.servers': 'mybroker'})
 
-new_topics = [NewTopic(topic, num_partitions=3, replication_factor=1) for topic in ["topic1", "topic2"]]
+new_topics = [NewTopic(topic, num_partitions=3, replication_factor=3) for topic in ["topic1", "topic2"]]
 # Note: In a multi-cluster production scenario, it is more typical to use a replication_factor of 3 for durability.
 
 # Call create_topics to asynchronously create topics. A dict of <topic,future> is returned.

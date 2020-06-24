@@ -183,8 +183,6 @@
   	-p 宿主机端口1:容器端口1  宿主机端口2:容器端口2
   ```
 
-  
-
 - 目录挂载技术,容器文件和宿主机文件映射
 
   ```
@@ -193,6 +191,12 @@
   docker run -it -v  /root/test:/root/project  python:3.8 bash
   参数 
   	-v  宿主机目录:容器目录
+  ```
+
+- **docker cp :**用于容器与主机之间的数据拷贝
+
+  ```
+  docker cp [OPTIONS] SRC_PATH|- CONTAINER:DEST_PATH
   ```
 
 ### 4 docker安装配置
