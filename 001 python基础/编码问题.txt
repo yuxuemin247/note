@@ -1,0 +1,84 @@
+# -*- coding: utf-8 -*-
+'''
+一、计算机中的一切均为 bytes(字节)。硬盘中的文件为一系列的 byte 组成，网络中传输的只有 byte。所有的信息，在你写的程序中进进出出的，均由 byte 组成。
+孤立的 byte 是毫无意义的，所以我们来赋予它们含义
+ASCII 码。每一个 byte 被赋予128种符号的一种。我给你发送 byte 值为 65 的时候，你知道我想表达一个大写的 A。
+byte 中没有容量可以存储更多的符号了
+
+二、世界上的字符远远比256个要多。一个简单的byte不能够表达世界范围内的字符。
+出现了unicode 可以包含所有国家的字符,Unicode 分配整形,被成为代码点( UNICODE 的字符被成为代码点（ CODE POINTS ）用 U 后面加上4个 XXXX 来表现,
+其中， X 为16进制的字符)来表示字符。
+它有 110 万的代码点,其中有十一万被占用，所以它可以有很多很多的空间可供未来的增长使用
+Unicode 的目的是包含一切，它从 ASCII 开始
+
+
+Unicode 提供了所有我们需要的字符的空间。但是我们仍然需要处理事实一中所碰到的问题：计算机只能看懂 bytes 。我们需要一种用 bytes 来表示 Unicode 的方法这样才可以存储和传播他们。
+
+Unicode 标准定义了多种方法来用 bytes 来表示成代码点，被称为  encoding。
+unicode是一种编码标准，具体的实现标准可能是utf-8，utf-16，gbk.ascii等
+UTF-8 是最流行的一种对 Unicode 进行传播和存储的编码方式。它用不同的 bytes 来表示每一个代码点
+它用不同的 bytes 来表示每一个代码点。ASCII 字符每个只需要用一个 byte ，与 ASCII 的编码是一样的。所以说 ASCII 是 UTF-8 的一个子集
+
+
+当编码或者解码的时候，你可以指明如果 codec 不能够处理数据的时候，会发生什么情况。
+ encode 或者 decode 时候的第二个参数指明了规则。默认的值是 “strict” ，意味着像刚才一样，会抛出一个异常。
+“replace” 值意味着，失败时将会返回一个标准的替代字符。当编码的时候，替代值是一个问号，所以任何不能被编码的值将会产生一个 ”?”。
+"xmlcharrefreplace",将会产生一个完全替代的 HTML/XML 字符,将16进制的转化为10进制
+my_unicode.encode("ascii","replace”")  # Hi ??????
+
+你也可以指定在解码时的错误处理方式。
+”ignore” 会直接将不能解码的 bytes 丢掉。
+”replace” 将会直接添加 Unicode U+FFFD ,给有问题的 bytes 来直接替换成”替换字符”。
+注意因为解码器不能解码这些数据。它并不知道到底有多少 Unicode 字符。解码我们的 UTF-8 字符串成为 ASCII 制造出了 16 个”替换字符”。每个 byte 不能被解析都被替换掉了。然而这些 bytes 只想要表示 6 个 Unicode 字符
+
+Python 2 已经试图在处理 unicode 和 byte 串的时候变得有用些。
+如果你系那个要把 Unicode 字符串串和 byte 字符串来组合起来的话,
+ Python 2 将会自动的将 byte 串来解码成 unicode 字符串。从而产生一个新的 Unicode 字符串
+ 
+ 比如，我们想要连接 Unicode 串 “hello” 和一个 byte 字符串 “world”。
+ 结果是一个 Unicode 的 “hello world”。在我们看来。
+ Python 2 将 “world” 使用 ASCII codec 进行了解码。
+ 这次在解码中使用的字符集的值与 sys.getdefaultencoding() 的值相等
+ 当然，这些隐藏的编码转换不能免疫于解码错误。
+ 如果你想要连接 一个 byte 字符串和一个 unicode 字符串，并且 byte 字符串不能被解码成 ASCII 的话，将会抛出一个 UnicodeDecodeError
+ Python 2 的哲学就是 Unicode 字符串和 byte 字符串是可以混合的。Python 2 悄悄掩盖了 byte 到 unicode 的转换，让程序在处理 ASCII 的时候更加简单。你付出的代价就是在处理非 ASCII 的时候将会失败
+'''
+# python2 
+name = str('Hello World')
+my_unicode = u"Hi \u2119\u01b4\u2602\u210c\xf8\u1f24"
+len(name)          # 11
+len(my_unicode)    # 9
+
+print type(name)       # <type 'str'>   ,存储 bytes
+print type(my_unicode) #<type 'unicode'>  code points 。在一个 unicode 字符串中，你可以使用反斜杠 u(u) 来插入任何的 unicode 代码点
+# python2中，它是由两种字符串数据类型,str对象，存储bytes。如果使用"u"前缀,则未unicode对象，存储的是code points
+# unicode.encode()   ----> bytes
+# bytes.decode()     ----> unicode
+
+print type(name.encode('UTF-8'))
+print type(name.decode('UTF-8'))
+print my_unicode.encode('ascii')
+#简单的去打印出一个 unicode 字符串将会调用隐式的编码:
+	输出总会是 bytes, 所以在 unicode 被打印之前必须被编码成 byte 串
+
+# sys.getdefaultencoding() #ascii 默认是
+# python3也是有两种类型，一个是unicode，一个是byte码。但是它们有不同的命名。
+# python3 ""或者str字符串，都是unicode，只有加  b"qwe"为字节码
+# Python 3 中对 Unicode 支持的最大变化就是没有对 byte 字符串的自动解码。
+# 如果你想要用一个 byte 字符串和一个 unicode 相连接的话，你会得到一个错误，不管包含的内容是什么。
+
+python3中完全不能混合Unicode和byte,会直接报错。如果是ascii码，那么混合unicode和byte在python2中将会成功
+
+#对读取文件的变化:python 对于读取文件有两种方式，一种是二进制，一种是文本
+#在 Python 3中。这两种模式将会返回不同的结果。当你用文本模式打开一个文件时不管你是用的 “r” 模式或者默认的模式，读取成功的文件将会自动转码成 unicode ，你会得到 str 对象。
+
+如果你用二进制模式打开一个文件，在参数中输入 “rb” ，那么从文件中读取的数据会是 bytes，对它们没有任何处理
+
+#制造一个 Unicode 三明治， bytes 在外， Unicode 在内。程序中用unicode，程序外bytes
+#同样的 bytes 流通过不同的解码器是可以解码的。而 bytes 本身不能指明它自己用的哪种编码方式
+
+import json
+import sys
+
+name1 = "于学敏"
+print(sys.getdefaultencoding())    #在python3中，不管win、linux都为utf-8
