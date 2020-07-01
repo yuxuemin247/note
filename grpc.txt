@@ -1,0 +1,6 @@
+1、pip install grpcio grpcio-tools protobuf
+grpc基于http2协议，不可读的二进制数据，采用protobuf序列化协议
+restful采用json、xml序列化协议
+2、小工具将 xx.proto文件转成python对应的服务器和客户端
+python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. hello.proto
+会生成 xxx_pb2.py和 xxx_pb2_grpc.py
