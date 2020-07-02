@@ -4,3 +4,8 @@ restful采用json、xml序列化协议
 2、小工具将 xx.proto文件转成python对应的服务器和客户端
 python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. hello.proto
 会生成 xxx_pb2.py和 xxx_pb2_grpc.py
+3、_pb2.py文件存储的是 每一个message对应的信息存储，比如我们定义的request与response
+_pb2_grpc.py 存储每一个服务的server端与客户端以及注册server的工具
+客户端名:service_name +Stub
+             service_name +Servicer
+              add_服务器名_to_server
