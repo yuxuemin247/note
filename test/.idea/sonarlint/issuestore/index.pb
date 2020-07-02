@@ -1,0 +1,10 @@
+
+A
+hello_pb2_grpc.py,a\6\a6840eb118c993c236babf6bb58347e16e1f4b6e
+:
+
+service.py,5\6\567053110c31f6448b8e3dc089dc56eb3e349204
+9
+	client.py,8\3\83c82b69e709f001cbef03ab0a6551df344cfad7
+<
+hello_pb2.py,6\3\63011f662d9396b2e617625d5715e6588e79c1c7

@@ -32,4 +32,13 @@
   4. 进入zip解压包中,执行python setup.py install
   ```
 
-- 
+- 离线安装包
+
+  ```
+  pip install --no-index --find-links=/your_offline_packages/ package_name  #安装单个包
+  
+  
+  pip install --no-index --find-links=/your_packages/ -r requirements.txt   #批量离线安装包
+  ```
+
+  

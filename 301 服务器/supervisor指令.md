@@ -43,6 +43,8 @@
 
 #####配置文件默认在 `etc/supervisord.d/`目录下
 
+supervisord.conf 注释是；
+
 ```
 #配置文件
 [program:sparkportal]
