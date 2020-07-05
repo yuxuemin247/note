@@ -1,0 +1,868 @@
+第01天
+~ 克隆代码到本地
+    先将<https://gitee.com/jackfrued/zufang>项目fork到自己的gitee仓库中再克隆代码。
+    方法一：git clone <项目仓库URL> / git pull
+    方法二：PyCharm欢迎页选择“Get from version control”
+
+~ 使用Docker安装MySQL
+    更新底层库：yum update
+    安装Docker：yum install -y docker
+    启动Docker服务：systemctl start docker
+    下载MySQL镜像文件：docker pull mysql:5.7.29
+    查看所有镜像：docker images
+    创建并运行容器：docker run -d -p 3306:3306 --name mysql57 -e "MYSQL_ROOT_PASSWORD=123456" mysql:5.7.29
+    查看运行中的容器：docker ps
+    查看系统网络端口占用情况：netstat -ntlp （只查看TCP协议监听状态端口）
+    启动容器：docker start mysql57
+    停止容器：docker stop mysql57
+    删除容器：docker rm mysql57 或者 docker rm -f mysql57
+    查看所有容器：docker container ls -a
+    进入容器：docker exec -it mysql57 /bin/bash
+
+~ MySQL创建用户分配权限
+    create user 'luohao'@'%' identified by 'Luohao.618';
+    grant all privileges on zufang.* to 'luohao'@'%';
+
+~ 安装依赖项解决版本不兼容问题
+    pip install -r requirements.txt -i https://pypi.doubanio.com/simple
+    
+    修改pymysql模块的install_as_MySQLdb函数
+    def install_as_MySQLdb():
+        global version_info
+        version_info = (1, 4, 2, "final", 0)
+        sys.modules["MySQLdb"] = sys.modules["_mysql"] = sys.modules["pymysql"]
+    
+    修改django.db.backends.mysql.operations模块的last_executed_query函数
+    def last_executed_query(self, cursor, sql, params):
+        query = getattr(cursor, '_executed', None)
+        if query is not None:
+            if type(query) == bytes:
+                query = query.decode(errors='replace')
+            elif type(query) == str:
+                query = query.encode(errors='replace')
+            else:
+                query = force_text(query, errors='replace')
+        return query
+
+~ 反向工程（通过表生成模型）
+    python manage.py inspectdb > common/models.py
+
+~ 修改模型类
+    多对一关系：ForeignKey(to='...', on_delete=models.DO_NOTHING, db_column='...')
+    多对多关系：ManyToManyField(to='...', through='...')
+    复合唯一索引：unique_together = (('...', '...'), )
+
+
+第02天
+
+~ 百分号编码
+    URL、HTTP请求行、请求头都不能出现非URL字符（非ASCII码字符）
+    所有的非URL字符都要统一处理为百分号编码
+    from urllib.parse import quote, unquote
+    quote('骆昊')
+    unquote(''%E9%AA%86%E6%98%8A'')
+
+~ 生成哈希摘要（签名、指纹）
+	from hashlib import md5, sha1, sha256
+	1. 处理字符串
+	md5('123456'.encode()).hexdigest() 
+	2. 处理大文件
+    hasher = sha256() 
+    with open('python-3.8.1-webinstall.exe', 'rb') as file: 
+        file_iter = iter(lambda: file.read(2048), b'') 
+        for data in file_iter: 
+            hasher.update(data) 
+            print(hasher.hexdigest())
+
+~ 关系型性数据库如何保证数据完整性和一致性
+    1. 实体完整性 - 每条记录都是唯一的 - 主键/唯一索引
+    2. 参照完整性 - 外键
+    3. 域完整性 - 数据库中的数据都是有效数据 - 数据类型 / 类型长度 / 非空约束 / 默认值约束 / 检查约束
+
+    一致性问题 - 事务
+    begin transaction / commit / rollback
+    查看MySQL事务隔离级别：select @@tx_isolation;
+    修改MySQL事务隔离级别：set session transaction isolation level read committed;
+
+~ 到底要不要外键约束
+    -- cascade（级联） / set null（设置为空） / restrict（保护）
+    alter table tb_emp add constraint fk_emp_dno foreign key (dno) 
+    references tb_dept (dno) on delete restrict on update restrict;
+
+    有高并发的应用不推荐使用外键，数据完整性必须在最底层保证就使用外键
+    数据库通常是性能瓶颈，有外键在增删改外键列时有检查开销，还有死锁风险
+    数据完整性可以交给应用程序来处理，将来分库分表时也减少很多麻烦，遇到底层数据库迁移（如MySQL迁移到Oracle）时也更加方便
+
+~ RESTful架构 - 一种适合互联网应用的风格而不是具体的技术
+    REpresentational State Transfer
+    1. 表象：URL用名词表示资源、用HTTP协议动词表示对资源的操作
+    2. 本质：无状态、水平扩展、幂等性
+
+~ HTTP无状态和服务器用户跟踪矛盾如何解决
+    1. URL重写（在URL中携带用户身份标识）
+    2. 隐式表单域（隐藏域、埋点）
+        <form>
+            <input type="hidden" name="..." value="...">
+        </form>
+    3. 浏览器本地存储
+        - cookie ---> 请求头（自动携带当前网站的Cookie）
+        - localStorage
+        - sessionStorage
+
+~ 设计数据接口
+    要点：围绕业务模型而不是用户界面或操作来设计数据接口
+    尽可能使用REST风格（考虑无状态、幂等性，以便做水平扩展）
+    接口文档撰写：RAP2 / YAPI
+
+
+第03天
+
+~ 序列化和反序列化
+    序列化：把一个对象变成字符串或者字节串的过程。
+    反序列化：把一个字符串或者字节串还原成对象的过程。
+    json / pickle - dump / dumps / load / loads
+    person = {'name': 'hao', 'age': 40}
+    json.dumps(person) ---> str
+    pickle.dumps(person) ---> bytes
+
+~ ORM框架
+    解决Python程序对象模型和关系型数据库关系模型不匹配问题，实现对象模型和关系模型的双向转换
+    District.objects.filter(parent__isnull=True).only('name')
+    only和defer方法可以指定需要查询的属性或者排除不需要查询的属性，对select语句做投影处理
+    Django的ORM框架在遇到关联查询时可能产生1+N查询问题，严重影响性能
+    对于多对一和一对一关系：select_related(关联对象)
+    Emp.objects.filter(dept__no=20).select_related('dept')
+    对于多对多关系：prefetch_related(关联对象)
+    Agent.objects.all().prefetch_related('estates')
+    可以使用Prefetch对象来定制多对多关系的预抓取方案
+    Prefetch('estates', queryset=Estates.objects.all().only('name').order_by('-hot'))
+
+~ 使用DRF框架创建数据接口的三种方式
+    1. FBV：@api_view((...)) ---> ModelSerializer ---> Response
+    序列化器可以定义SerializerMethodField，通过与属性匹配的方法来获取序列化后的数据
+    一个序列化器的方法中可以调用其他的序列化器来序列化数据
+
+    2. CBV：APIView ---> GenericAPIView ---> ListAPIView / CreateAPIView / UpdateAPIView 
+    ---> ListCreateAPIView ---> RetrieveUpdateAPIView
+    指定queryset / serializer_class等类属性就可以完成对接口的定制
+    如果想要重新定制接口，可以通过重写父类方法来实现，
+    例如重写get方法，重写get_serializer_class方法，重写get_queryset方法
+
+    3. CBV：ModelViewSet ---> ReadOnlyModelViewSet
+    定制queryset / serializer_class 等属性
+    配置URL的时候需要通过路由器对象来注册视图集完成URL映射
+    router = SimpleRouter()
+    router.register('...', 视图集)
+    urlpatterns += router.urls
+
+
+第04天
+
+~ 在Django框架下如何使用原生SQL查询
+    1. Agent.objects.raw('...')
+    2. django.db.connections['default'] ---> cursor() 
+        ---> execute('...')
+        ---> fetchall() / fetchone() / fetchmany(n)
+    -----------------------------查询补充-----------------------------
+    Agent.objects.all().extra(
+        select={'now': 'select now() from dual'},
+        # select_params=(someparam, )
+    )
+    Agent.objects.all().annotate(
+        now=RawSQL(
+            'select onecol from sometable where col1=%s or col2=%s', 
+            (param1, param2)
+        )
+    )
+
+~ 查询分页
+    PageNumberPagination / LimitOffsetPagination / CursorPagination
+    可以通过REST_FRAMEWOKR配置默认的分页类
+    可以修改视图类的pagination_class属性覆盖默认的分页类
+    可以继承上面的类来自定义分页类
+
+~ 缓存
+    时间和空间是不可调和的矛盾，软件和硬件在逻辑上是等效的
+    缓存是典型的空间换时间策略，池化技术（线程池、连接池等）也是典型的空间换时间策略
+    例如：数据库连接池就是通过提前创建和保留数据库连接，减少创建释放连接时TCP三次握手四次挥手的开销
+    1. 声明式缓存
+    @cache_page(timeout=...) ---> FBV
+    @method_decorator(cache_page(timeout=...), name='list') ---> CBV
+    2. 编程式缓存
+    django.core.cache.caches['...'] ---> set / get
+    django_redis.get_redis_connection ---> Redis ---> 几乎所有命令
+    可能需要手动序列化数据 pickle / json
+
+    进入redis-master容器：
+    docker exec -it redis-master /bin/bash
+    启动Redis命令行工具（默认连接本机6379端口）：
+    redis-cli
+    > keys *        查看所有的键
+    > get ...       通过键获取值（字符串）
+    > set ...       设置键值对（字符串）
+    > ttl ...       查询键过期时间
+    > flushdb       清空当前数据库数据
+    > expire ...    设置键过期时间
+
+
+第05天
+
+~ 接口访问限流
+    修改REST_FRAMEWOKR配置
+    'DEFAULT_THROTTLE_CLASSES': (
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+    ),
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '30/min',
+        'user': '10000/day',
+    }
+    FBV ---> @throttle_classes((...))
+    CBV ---> throttle_classes = (...)
+
+~ 接口数据筛选和排序
+    方法1：重写get_queryset()方法，根据请求参数给queryset加filter操作实现数据筛选，加order_by操作实现排序
+    方法2：使用django-filter的DjangoFilterBackend简化数据筛选操作
+        filter_backends = (DjangoFilterBackend, OrderingFilter)
+        filter_fields / filterset_class 指定根据哪些字段进行筛选
+        ordering 指定默认的排序字段，ordering_fields 指定备选排序字段
+        可以通过继承django_filters.filtersets中的FilterSet类来自定义筛选规则
+
+~ 接口测试
+    Postman / Postwoman / JMeter
+
+~ 前后端联调
+    前端渲染和组件定制：React / Vue.js / AngularJS
+    用户界面组件库：Element / Mint
+    前端异步请求：XMLHttpRequest / Fetch / jQuery / Axios
+    前端工程化：Node.js / Webpack / Babel / 脚手架工具
+
+
+项目开发实战第2周
+
+~ 面向对象的设计原则：
+    1. 单一职责原则（SRP）- 一个类只有必要的属性和方法，一个函数只做好一件事情 - 高内聚
+    2. 开闭原则（OCP）- 对扩展开放，对修改关闭 - 抽象化和封装可变性 - 对多态的应用
+    3. 依赖倒转原则（DIP）- 面向抽象编程（面向接口编程）- 尽可能的使用抽象类型让系统有扩展性 (x)
+    4. 里氏替换原则（LSP）- 能用父类型的地方一定可以使用子类型 - 不满足里氏替换原则的继承是不能够成立的
+    5. 接口隔离原则（ISP）- 接口要小而专不能大而全 - 高内聚 (x)
+    6. 合成聚合复用原则（CARP）- 优先使用强关联而不是继承关系复用代码
+    7. 迪米特法则（LoD）- 不要跟陌生人讲话 - 低耦合
+
+    SOLID原则 = SRP + OCP + LSP + ISP + LoD
+
+    ----> GoF 1995 ---> 23种场景 ---> Design Pattern
+    单例：无状态 / 共享状态
+    代理模式：装饰器
+
+~ 单元测试
+    定义：针对程序中最小的功能单元（函数、方法）进行的测试
+    方法：黑盒测试（不知道函数的内部结构和实现） / 白盒测试
+        ~ 黑盒测试：传入参数调用函数，判断实际的输出跟你预期的输出是否一致
+            - 规划测试用例（数据）：等价类 / 边界值法 / 因果图
+            - 使用断言语句来判定测试是否通过
+        ~ 白盒测试：测试要覆盖到每条语句保证每个分支都执行到
+            - 语句覆盖 / 分支覆盖
+    Python对单元测试的支持 - unittest ---> TestCase ---> test_xxx /
+        setUp / tearDown / setUpClass / tearDownClass
+    三方库：pytest / nose2 / coverage / ddt
+    自动化测试/接口测试：Selenium WebDriver / Appnium / RobotFramework
+    《软件测试的艺术》
+
+~ 项目的模块划分和分层架构
+    ~ 解决复杂问题首先想到的就是分解（拆分） ---> 水平拆分和垂直拆分
+    ~ 模块（包）划分 ---> 垂直拆分 ---> 按业务将不同的业务放在不同的模块中 ---> App
+        python manage.py startapp <name>
+    ~ 功能（包的内部）划分 ---> 水平拆分 ---> 分层架构
+        index.html ---> View ---> request ---> 用户请求数据展示
+        调用
+        views.py ---> Controller ---> 只负责处理用户请求和渲染视图
+        调用
+        biz.py ---> Business Logic ---> 处理用户请求对应的复杂的业务逻辑
+        调用
+        models.py ---> Model ---> 只负责CRUD操作
+
+~ 自动创建接口文档 ---> Swagger
+    pip install django-rest-swagger
+    url ---> schema_view = get_swagger_view(title='项目接口文档')
+    注释格式的约定
+
+~ 实现服务化架构 ---> SOA / SasS / PasS / IasS / Micro-Service
+    1. RPC - nameko
+    2. WebService ---> SOAP
+    3. RESTful ---> HTTP / Resource / Stateless / Horizontal Scaling
+
+~ 为用户生成身份令牌 ---> Json Web Token ---> 防伪造防篡改
+    pip install pyjwt ---> jwt ---> encode() / decode()
+
+    通过JWT对用户进行认证和授权操作
+
+~ 业务原子性保障
+    ~ with atomic():
+    ~ @atomic()
+
+~ 网站优化两大定律
+    ~ 第一定律：使用缓存 - 空间换时间
+    ~ 第二定律：使用消息队列 - 削峰和异步化
+
+~ 消息队列（消息中间件）
+    ~ 队列：FIFO，解决消息传递问题
+    ~ 消息传递模式：P2P、PubSub
+    ~ 消息队列的作用：解耦、削峰、可靠性、顺序性、缓冲、异步化
+    ~ 相关术语：AMQP / STOMP / MQTT
+        Advanced Message Queue Protocol ---> Cisco / Rehat
+        Streaming Text Oriented Message Protocol
+        Message Queue Telemetry Transport ---> IBM ---> 物联网
+    ~ 消息队列产品比较
+        Redis中的list类型可以用来实现消息队列服务，但并不是专业的消息队列服务器
+        RabbitMQ ---> Erlang ---> 爱立信
+        Kafka / RocketMQ / ActiveMQ
+    ~ RabbitMQ相关内容
+        ~ 相关概念：
+            - 队列（Queue）：存储消息的对象
+            - 交换器（Exchange）：负责将消息路由到一个或多个队列中
+                ~ 四种类型：fanout / direct / topic / headers
+            - 路由键（RoutingKey）：生产者为消息绑定的键，用来指定消息的路由规则
+            - 绑定键（Binding Key）：与RoutingKey匹配，将消息路由到对应的队列
+        ~ 配置管理 ---> rabbitmqctl
+            - 添加/删除/查看虚拟主机
+            add_vhost / list_vhosts / delete_vhost
+            - 创建删除用户/修改密码/分配角色（none、management、policymaker、monitoring、administrator）
+            add_user / change_password / delete_user / list_users / set_user_tags
+            - 分配/清理/查看用户权限（配置、读、写）
+            set_permissions / clear_permissions / list_permissions
+        ~ 插件管理
+            - 查看所有插件：rabbitmq-plugins list
+            - 启用指定插件：rabbitmq-plugins enable rabbitmq_management
+        ~ 应用和集群管理（x）
+        ~ 状态管理
+            - rabbitmqctl list_queues -p vhost
+            - rabbitmqctl list_exchanges -p vhost
+            - rabbitmqctl list_connections
+            - rabbitmqctl list_channels
+
+~ 耗时间的任务如何处理
+    1. 多线程 ---> 线程池 - 池化技术（空间换时间） ---> concurrent.futures.ThreadPoolExecutor
+        ---> submit / map ---> Future ---> done() / result()
+        可以写一个装饰器来装饰需要放到线程中执行的耗时任务函数
+        def run_in_thread_pool(*, callbacks=(), callbacks_kwargs=()):
+            """将函数放入线程池执行的装饰器"""
+
+            def decorator(func):
+
+                @wraps(func)
+                def wrapper(*args, **kwargs):
+                    future = EXECUTOR.submit(func, *args, **kwargs)
+                    for index, callback in enumerate(callbacks):
+                        try:
+                            kwargs = callbacks_kwargs[index]
+                        except IndexError:
+                            kwargs = None
+                        fn = partial(callback, **kwargs) if kwargs else callback
+                        future.add_done_callback(fn)
+                    return future
+
+                return wrapper
+
+            return decorator
+    2. 任务异步化处理 ---> Celery + MQ
+
+~ Celery
+    1. 安装
+        pip install celery
+    2. Broker - 消息代理 - 消息队列服务
+        - Redis：http://docs.celeryproject.org/en/latest/getting-started/brokers/redis.html#broker-redis
+        - RabbitMQ：http://docs.celeryproject.org/en/latest/getting-started/brokers/rabbitmq.html#broker-rabbitmq
+    3. Celery对象
+        # 加载Django项目配置
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'zufang.settings')
+        # 创建Celery对象，指定模块名、消息代理（消息队列）和持久化方式
+        app = celery.Celery('zufang',
+                            broker='amqp://luohao:1qaz2wsx@120.77.222.217:5672/zufangwang_vhost',
+                            backend='redis://120.77.222.217:6379/2')
+        # 以下的步骤不是必须的根据需要来设置
+        app.conf.update({
+            'common.utils.task1': {'queue': 'queue1'},
+        })
+        # 从配置文件中读取Celery相关配置
+        app.config_from_object('django.conf:settings')
+        # 自动从指定的应用中发现任务（异步任务/定时任务）
+        app.autodiscover_tasks(('common', ))
+        # 自动从注册的应用中发现任务（异步任务/定时任务）
+        app.autodiscover_tasks(settings.INSTALLED_APPS)
+    4. 生产者（调用异步任务）
+        @app.task
+        def send_sms_by_luosimao(tel, message):
+            pass
+        方法1：
+        # 通过delay方法将要执行的任务放入消息队列
+        send_sms_by_luosimao.delay(tel, message)
+        或者
+        task = send_sms_by_luosimao.s(countdown=10)
+        task.delay(tel, message)
+        方法2：
+        send_sms_by_luosimao.apply_async(
+            (tel, message),         # 函数的参数
+            timeout=10,             # 延迟处理的时间
+            queue='queue1',         # 路由
+            retry_policy={},        # 重试策略
+            expires=60,             # 超时时间
+            compression='zlib',     # 消息压缩方式
+        )
+        关于调用异步任务的详细内容请一定参考官方文档：
+        https://docs.celeryproject.org/en/latest/userguide/calling.html
+    5. 消费者
+        celery -A zufang worker -l debug -Q queue1
+        celery -A zufang worker -l debug -Q queue2
+        celery -A zufang worker -l debug -Q queue3
+        提示：Windows环境启动失败是因为Celery 4.x没有提供对Windows的兼容支持，
+        可以使用eventlet或gevent作为底层网络库来解决，具体的做法是：
+        方法1：
+        pip install eventlet
+        celery -A zufang worker -l debug -P eventlet
+        方法2：
+        pip install gevent
+        celery -A zufang worker -l debug -P gevent
+    6. 原语
+        ~ 打包执行 - group - 将一组任务异步执行并返回一组结果
+        from celery import group
+        task_group = group(task1.s(), task2.s(), ...)
+        results = task_group() ---> list
+        ~ 链式执行 - chain - 按顺序链式执行任务并将上一个任务的结果传给下一个任务
+        from celery import chain
+        task = chain(task1.s() | task2.s() | task3.s())
+        result = task()
+        注意：task1的输出相当于是task2的参数
+    7. 消息路由
+        官文：https://docs.celeryproject.org/en/latest/userguide/routing.html#guide-routing
+        celery -A <name> worker -Q queue1
+        celery -A <name> worker -Q queue2
+        task1.apply_async(queue=queue1)
+        task2.apply_async(queue=queue2)
+    8. 持久化任务结果
+        ~ 持久化到Redis
+            backend='redis://120.77.222.217:6379/2'
+        ~ 持久化到数据库
+            安装：pip install django-celery-results
+            修改Django配置：INSTALLED_APPS = ['django_celery_results']
+            迁移生成表：python manage.py migrate django_celery_results
+            修改Celery配置：
+            app = celery.Celery(
+                'zufang',
+                broker='amqp://luohao:1qaz2wsx@120.77.222.217:5672/zufangwang_vhost',
+                backend='django-db'
+            )
+    9. 消息队列监控
+        pip install flower ---> Tornado（c10k、高并发、长链接、异步化、协程化）
+        celery flower --broker=amqp://luohao:1qaz2wsx@120.77.222.217:5672/zufangwang_vhost
+    10. 定时任务
+        1. django-crontab (x)
+        2. APScheduler
+        3. Celery / django-celery-beats
+            app.conf.update(
+                timezone=settings.TIME_ZONE,
+                enable_utc=True,
+                beat_schedule={
+                    'task1': {
+                        'task': 'common.tasks.remove_expired_records',
+                        'schedule': crontab('0', '2', '*', '*', '*'),
+                        'args': ()
+                    },
+                },
+            )
+
+~ 用户身份认证和授权 ---> 访问控制（权限管理）
+    1. ACL ---> Access Control List ---> 访问白名单/访问黑名单
+    2. RBAC ---> 基于角色的访问控制
+        User <------> Role <------> Privilege (<-----> Resource)
+    
+    djangorestframework
+    - BaseAuthentication ---> authenticate ---> user, token
+    - BasePermission ---> has_permission ---> True / False
+
+~ 如何在退出登录时让令牌彻底失效
+    1. 通过添加中间层，引入一个失效令牌的黑名单对请求加以阻止
+    2. 通过认证中心实现登录认证，道理跟上面一致也是加了中间层
+
+
+项目开发实战第3周 
+
+~ 项目的三大架构
+    项目的简短描述（定性）。
+    1. 业务架构
+        XMind ---> 模块 ---> 大用户故事（Epic）---> 小用户故事（User Story）---> 需求池
+        垂直拆分 ---> 分功能模块 ---> 每个功能模块相对独立，松散耦合
+        水平拆分 ---> 分代码职责 ---> 模型（持久化）、业务逻辑、控制器（FBV、CBV）
+    
+    2. 技术架构
+        前端
+            ~ 常用库：jQuery / Lodash / Underscore / Axios / Moment.js / lazyload / ECharts
+            ~ 组件：Bootstrap / Element UI / Mint UI
+            ~ 渲染/通信/路由：Vue.js / Vuex / Vue-Router / React / Redux / Umi / ...
+            ~ 工具：Webpack / Gulp / ESLint
+            SPA - Single Page Application
+        移动端
+            原生开发：
+                ~ Android：Java / Kotlin
+                ~ iOS：Objective-C / Swift
+            跨平台开发：
+                ~ React Native / Uni-App / Flutter / Weex
+        后端
+            ~ 框架：Django / Flask / Sanic / Tornado / FastAPI
+                - Django生态圈：djangorestframework / django-redis / django-filter / 
+                django-imagekit / django-storages / django-debug-toolbar / 
+                django-rest-swagger / django-celery-result / celery / flower / 
+                pillow / mysqlclient / pymysql / psycopg2 / logutils / sentry / 
+                cookicutter / bpmappers / python-dateutil / pycrypto / pyjwt / 
+                itsdangerous / pytest / nose2 / coverage / requests / aiohttp /
+                django-haystack / pylint / flake8 / django-cors-headers / pymongo
+                - Flask生态圈：flask-sqlalchemy / flask-restful / ...
+                - Tornado生态圈：aioredis / aiomysql / motor / ...
+            ~ 数据持久化：
+                - 关系型：MySQL / PostgreSQL / Oracle
+                - NoSQL：Redis / MongoDB / ElasticSearch
+                - NewSQL：TiDB
+            ~ 缓存服务：Redis / Memcached
+            ~ 消息队列：Redis / RabbitMQ / Kafka
+            ~ 邮件服务：sendmail / postfix
+            ~ 监控服务：Nagios / Zabbix / Promethus
+            ~ 搜索引擎：ElasticSearch / Solr ---> Lucene
+        三方服务：
+            ~ 云存储服务：qiniu / oss2 / s3
+            ~ 短信邮件服务：luosimao / 云片 / SendCloud
+            ~ 验证码服务：极验 / 易盾
+            ~ 监控服务：阿里云监控 / 百度云观测
+            ~ 支付平台：微信 / 支付宝 / 支付集成（Ping++）
+            ~ 其他平台：物流 / 天气 / 地图 / 实名认证 / 企业认证 / 银行卡 / 工商信息 / 发票 / 征信 / OCR / 图片识别（鉴黄）
+        测试：
+            ~ 手动测试/自动化测试：测试用例 ---> 测试集（测试套件）
+            ~ 单元测试：unittest / mock / pytest / nose2 / coverage / tox / ddt
+            ~ UI自动化测试：PyAutoGui / Appnium / Selenium
+            ~ 接口测试：requests / HttpRunner / PyRestTest
+            ~ 工具：Postman / JMeter / LoadRunner / sysbench / ab / webbench
+            ~ 测试管理：JIRA / 禅道 ---> 测试用例管理 / 缺陷管理
+
+    3. 物理架构
+        经典面试题：从浏览器输入URL回车到浏览器显示结果中间发送了什么事情。
+        重要：物理架构图！！！
+
+~ Linux安装软件（Redhat / CentOS）
+    1. 包管理工具 ---> Nginx / MySQL
+        ~ yum
+            - yum search
+            - yum install
+            - yum remove / yum erase
+            - yum update
+            - yum info
+            - yum list installed
+        ~ rpm（Redhat Package Manager）
+            - rpm -ivh 
+            - rpm -e
+            - rpm -qa
+    2. 源代码构建安装 ---> Git / Python 3
+        ~ make 
+        ~ make install
+    3. 二进制程序 ---> MongoDB
+
+~ tldr工具（可以查看命令帮助）的安装和使用
+    安装Node.js：yum install -y nodejs
+    更换下载源：npm config set registry https://registry.npm.taobao.org/
+    更新NPM：npm install -g npm
+    安装tldr：npm install -g tldr
+
+    tldr find
+
+~ 数据库分库主从和路由
+    1. MySQL多实例配置
+        ~ 不使用虚拟化容器：
+            - 修改配置文件写多段配置，分别使用不同的端口，例如：
+                [mysqld@i1]
+                port=3306
+                ...
+                [mysqld@i2]
+                port=3307
+                ...
+            - 通过systemctl命令分别启动不同的实例，例如：
+                systemctl start mysqld@i1
+                systemctl start mysqld@i2
+        ~ 使用Docker：直接创建一个容器即可，注意端口不要跟其他容器冲突。
+            docker run -d -p 3307:3306 --name mysql-other \
+                -v /root/docker/mysql/other/conf:/etc/mysql/mysql.conf.d \
+                -v /root/docker/mysql/other/data:/var/lib/mysql \
+                -e MYSQL_ROOT_PASSWORD=123456 mysql:5.7.29
+    
+    2. MySQL主从复制读写分离配置
+    Docker虚拟化容器安装
+    mkdir -p ~/docker/mysql/{master,slave-1,slave-2,slave-3}/{conf,data}
+
+    ~ 配置Master
+        vim ~/docker/mysql/master/conf/my.cnf
+        
+        [mysqld]
+        pid-file=/var/run/mysqld/mysqld.pid
+        socket=/var/run/mysqld/mysqld.sock
+        datadir=/var/lib/mysql
+        log-error=/var/log/mysql/error.log
+        server-id=1
+        log-bin=/var/log/mysql/mysql-bin.log
+        expire_logs_days=30
+        max_binlog_size=256M
+        symbolic-links=0
+
+        docker run -d -p 3306:3306 --name mysql-master \
+            -v /root/docker/mysql/master/conf:/etc/mysql/mysql.conf.d \
+            -v /root/docker/mysql/master/data:/var/lib/mysql \
+            -e MYSQL_ROOT_PASSWORD=123456 mysql:5.7.29
+    
+        docker exec -it mysql-master /bin/bash
+        mysql -u root -p
+
+        mysql> grant replication slave on *.* to 'slave'@'%' identified by 'iamslave';
+        mysql> flush privileges;
+        mysql> show master status;
+        注意：这里要记住master的日志文件名和位置，而且在配置从机的时候不要再有写入操作！！！
+        
+        说明：如果不希望在配置主从的过程中有新的写入操作，可以使用下面的方式将master暂时设置为只读。
+        mysql> flush table with read lock;
+        在配置完成后，可以使用下面的命令来解除对表锁。
+        mysql> unlock table;
+
+    ~ 配置Slave
+        vim docker/mysql/slave-1/conf/my.cnf
+
+        [mysqld]
+        pid-file=/var/run/mysqld/mysqld.pid
+        socket=/var/run/mysqld/mysqld.sock
+        datadir=/var/lib/mysql
+        log-error=/var/log/mysql/error.log
+        server-id=41
+        log-bin=/var/log/mysql/mysql-bin.log
+        expire_logs_days=30
+        max_binlog_size=256M
+        symbolic-links=0
+        slow_query_log=ON
+        slow_query_log_file=/var/log/mysql/slow.log
+        long_query_time=1
+
+        docker run -d -p 3308:3306 --name mysql-slave-1 \
+            -v /root/docker/mysql/slave-1/conf:/etc/mysql/mysql.conf.d \
+            -v /root/docker/mysql/slave-1/data:/var/lib/mysql \
+            -e MYSQL_ROOT_PASSWORD=123456 \
+            --link mysql-master:mysql-master mysql:5.7.29
+
+        docker exec -it mysql-slave-1 /bin/bash
+
+        mysql -u root -p
+        mysql> reset slave;
+        下面命令最后两个参数一定是你用show master status查到的master的日志和位置！！！
+        mysql> change master to master_host='mysql-master', master_user='slave', master_password='iamslave', master_log_file='mysql-bin.000004', master_log_pos=154; 
+        mysql> start slave;
+        mysql> show slave status\G
+        注意看看Slave_IO_Running和Slave_SQL_Running两个列的值是不是Yes！！！
+
+        配置第2个和第3个slave跟上面的操作类似，注意一定要确认master的日志和位置，不要弄错！！！
+
+        docker run -d -p 3309:3306 --name mysql-slave-2 \
+            -v /root/docker/mysql/slave-2/conf:/etc/mysql/mysql.conf.d \
+            -v /root/docker/mysql/slave-2/data:/var/lib/mysql \
+            -e MYSQL_ROOT_PASSWORD=123456 \
+            --link mysql-master:mysql-master mysql:5.7.29
+    
+        docker run -d -p 3310:3306 --name mysql-slave-3 \
+            -v /root/docker/mysql/slave-3/conf:/etc/mysql/mysql.conf.d \
+            -v /root/docker/mysql/slave-3/data:/var/lib/mysql \
+            -e MYSQL_ROOT_PASSWORD=123456 \
+            --link mysql-master:mysql-master mysql:5.7.29
+
+        后面的配置不在赘述！！！
+
+        注意：需要在防火墙打开对应的端口稍后才能在Django项目中使用主从复制读写分离！！！
+
+    3. 编写数据库路由
+        # common/db_routers.py
+        import random
+
+
+        class MasterSlaveRouter:
+
+            @staticmethod
+            def db_for_read(model, **hints):
+                if model._meta.app_label == 'hrs':
+                    return 'backend'
+                return random.choice(('slave1', 'slave2', 'slave3'))
+
+            @staticmethod
+            def db_for_write(model, **hints):
+                if model._meta.app_label == 'hrs':
+                    return 'backend'
+                return 'default'
+
+            @staticmethod
+            def allow_relation(obj1, obj2, **hints):
+                return None
+
+            @staticmethod
+            def allow_migrate(db, app_label, model_name=None, **hints):
+                return True
+
+        配置路由：
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.mysql',
+                'NAME': 'zufang',
+                'HOST': '120.77.222.217',
+                'PORT': 3306,
+                'USER': 'luohao',
+                'PASSWORD': 'Luohao.618',
+                'CHARSET': 'utf8',
+                'TIME_ZONE': 'Asia/Shanghai',
+            },
+            'slave1': {
+                'ENGINE': 'django.db.backends.mysql',
+                'NAME': 'zufang',
+                'HOST': '120.77.222.217',
+                'PORT': 3308,
+                'USER': 'luohao1',
+                'PASSWORD': 'Luohao.618',
+                'CHARSET': 'utf8',
+                'TIME_ZONE': 'Asia/Shanghai',
+            },
+            'slave2': {
+                'ENGINE': 'django.db.backends.mysql',
+                'NAME': 'zufang',
+                'HOST': '120.77.222.217',
+                'PORT': 3309,
+                'USER': 'luohao2',
+                'PASSWORD': 'Luohao.618',
+                'CHARSET': 'utf8',
+                'TIME_ZONE': 'Asia/Shanghai',
+            },
+            'slave3': {
+                'ENGINE': 'django.db.backends.mysql',
+                'NAME': 'zufang',
+                'HOST': '120.77.222.217',
+                'PORT': 3310,
+                'USER': 'luohao3',
+                'PASSWORD': 'Luohao.618',
+                'CHARSET': 'utf8',
+                'TIME_ZONE': 'Asia/Shanghai',
+            },
+            'backend': {
+                'ENGINE': 'django.db.backends.mysql',
+                'NAME': 'hrs',
+                'HOST': '120.77.222.217',
+                'PORT': 3307,
+                'USER': 'luohao',
+                'PASSWORD': 'Luohao.618',
+                'CHARSET': 'utf8',
+                'TIME_ZONE': 'Asia/Shanghai',
+            }
+        }
+
+        # 数据库路由配置
+        DATABASE_ROUTERS = [
+            'common.db_routers.MasterSlaveRouter',
+        ]
+
+~ 项目中的报表功能
+    1. Excel报表 （xlrd、xlwt）/ PDF报表（pypdf2、reportlab）
+        ~ 按需生成：查询、筛选、勾选 ---> 导出
+        ~ 定时生成：定时任务 ---> 按照结算时间自动触发报表生成（导出报表相当于下载一个静态资源）
+    2. 前端统计图表 ---> ECharts
+        ~ 后端提供统计图表需要的数据（接口），前端异步请求数据，通过JavaScript渲染页面
+
+~ PyCharm（专业版）远程调试代码
+    cd /root/project
+    创建虚拟环境：
+        - 方法1：
+        python3 -m venv venv
+        - 方法2：
+        pip3 install virtualenv
+        whereis python3
+        virtualenv --python=/usr/bin/python3 venv
+    激活虚拟环境
+        source venv/bin/activate
+    重建依赖项：
+        requirements.txt
+        PyMySQL ---> mysqlclient ---> MySQL rpm包 ---> common / libs / libs-compat / devel
+        注释掉：pymysql.install_as_MySQLdb()
+        pip install -r code/requirements.txt
+    在PyCharm中指定服务器上的虚拟环境运行代码
+        选择服务器上的 ---> venv/bin/python ---> 用服务器的Python解释器来运行你的项目
+        Run Configurations ---> runserver 服务器内网IP:8000
+    
+    settings.py ---> ALLOWED_HOSTS = ['*']
+    数据库、缓存、消息队列服务器都可以通过内网IP地址进行连接，不用向公网暴露端口
+
+~ 安全相关问题概述
+    1. 摘要
+    2. 加密解密
+    3. 编码解码
+
+~ 接入支付平台
+    1. 支付宝
+    2. 微信
+    3. 支付集成平台
+
+~ 全文检索和搜索引擎
+    Apache ---> Lucene ---> ElasticSearch / Solr
+    1. 倒排索引
+    2. ElasticSearch / Solr / Whoosh ---> 文档数据库（类似于MongoDB）
+    3. 中文分词和拼音分词
+    4. 接入搜索引擎服务
+        ~ RESTful API方式
+        ~ DSL方式
+
+~ WebSocket和推送消息
+    1. WebSocket能解决什么问题
+    2. Django / Flask 项目如何支持WebSocket
+
+~ 日志的收集和处理
+    1. 运行日志监控 ---> Sentry ---> crash reporting & aggregation
+        ~ 两种使用方式：
+        1. 使用官方提供的平台进行错误信息采集 ---> sentry.io
+        2. 自己搭建一个Sentry服务器收集项目的错误信息
+            ~ 下载项目代码：git clone https://github.com/getsentry/onpremise.git
+            ~ cd onpremise
+            ~ pip3 install docker-compose
+            ~ sysctl -w net.ipv4.ip_forward=1
+            ~ ./install.sh
+            ~ 通过Docker-compose工具启动多容器：docker-compose up -d
+            ~ 停止Sentry服务：docker-compose down
+            第一次运行可以创建一个管理员账号并做少量的配置
+            在Sentry创建项目时，它会自动生成一段代码，把这段代码复制到项目中
+            就可以为项目提供错误跟踪和收集功能，当然还需要安装sentry_sdk
+            pip install sentry_sdk
+        注意：Sentry要启动很多个容器耗费的资源非常多，服务器至少需要2G内存。
+    2. ELK概述
+
+~ 项目上线相关问题
+    1. Django配置文件的修改
+    2. uWSGI / Gunicorn 的使用
+    3. Nginx相关配置 ---> OpenResty
+    4. 反向代理和负载均衡
+    5. 虚拟化部署
+
+~ 安装Go语言环境
+    1. 下载：
+    wget https://dl.google.com/go/go1.14.linux-amd64.tar.gz
+    2. 解压：
+    tar -C /usr/local -xzf go1.14.linux-amd64.tar.gz
+    3. 环境变量： ---> ~/.bash_profile ---> /etc/profile
+    export PATH=$PATH:/usr/local/go/bin
+    4. 测试:
+    go version
+    5. 代码：
+    package main
+
+    import "fmt"
+
+    func main() {
+        fmt.Printf("hello, world\n")
+    }
+    6. 编译运行：
+    go build hello.go
+    ./hello
+
+    go get github.com/siddontang/go-mysql-elasticsearch
+    make
