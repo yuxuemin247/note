@@ -1,81 +1,74 @@
-##### 启动服务
+`sueprvisor`是一个Linux/Unix系统上的进程监控工具,由`python2`开发的进程管理程序，能将一个普通的命令行进程变为后台daemon，并监控进程状态，异常时可以自动重启。不能同`daemontools`一样，它不能监控daemon进程
 
-- ```
-  supervisord -c xxxx.conf
-  ```
+##### 一、为什么用supervisor
 
-##### 进入客户端操作
+- supervisor提供了一种统一的方式来start、stop、restart 你的进程，进程可以单独控制，也可以成组的控制。可以通过本地命令行`supervisorctl`和web接口来管理。
+- 集中管理 supervisor管理的进程，进程组信息，全部都写在一个ini格式的文件里就OK了
 
-- ```
-  supervisorctl 
-  ```
+##### 二、supervisor组件
 
-##### 查看任务状态
+- `supervisord` 主进程，负责管理进程的server,它会根据配置文件创建指定数量的应用程序的子进程，管理子进程的整个生命周期。同时内置了web server和`XML-RPC Interface`，轻松实现进程管理。该服务的默认配置文件在`/etc/supervisor/supervisord.conf`
 
-- ```
-  supervisorctl status
-  第一列是服务名；第二列是运行状态，RUNNING表示运行中，FATAL 表示运行失败，STARTING表示正在启动,STOPED表示任务已停止；　第三/四列是进程号,最后是任务已经运行的时间。
-  ```
+  - 启动服务
 
-##### 启动任务
+    ```
+    supervisord -c xxx.conf
+    ```
 
-- ```
-  supervisorctl  start 服务名
-  ```
+- `supervisorctl`客户端的命令行工具，提供了一个类似shell的操作接口，通过它你可以连接到不同的`supervisord`进程来管理它们各自的子程序，命令通过UNIX socket 或者TCP来和服务通讯。用户可以通过命令行发送消息给`supervisord`，可以查看进程状态，加载配置文件，查看进程标准输出和错误输出。服务端也可以要求客户端提供身份验证之后才能操作。
 
-##### 停止任务
+  - ##### 进入客户端操作
 
-- ```
-  supervisorctl  stop 服务名
-  ```
+    ```
+    supervisorctl 
+    ```
 
-##### 重启任务
+  - ##### 查看任务状态
 
-- ```
-  supervisorctl restart 服务名
-  ```
+    ```
+    supervisorctl status
+    第一列是服务名；第二列是运行状态，RUNNING表示运行中，FATAL 表示运行失败，STARTING表示正在启动,STOPED表示任务已停止；　第三/四列是进程号,最后是任务已经运行的时间。
+    ```
 
-##### 增加了配置文件,更新
+  - ##### 启动任务
 
-- ```
-  supervisorctl update
-  ```
+    ```
+    supervisorctl  start 服务名
+    ```
 
-#####配置文件默认在 `etc/supervisord.d/`目录下
+  - ##### 停止任务
 
-supervisord.conf 注释是；
+    ```
+    supervisorctl  stop 服务名
+    ```
 
-```
-#配置文件
-[program:sparkportal]
-command=node www.js
-process_name=%(program_name)s ; process_name expr (default %(program_name)s)
-numprocs=1                    ; number of processes copies to start (def 1)
-directory=/usr/local/sparkportal/bin                ; directory to cwd to before exec (def no cwd)
-;umask=022                     ; umask for process (default None)
-;priority=999                  ; the relative start priority (default 999)
-autostart=true                ; start at supervisord start (default: true)
-autorestart=unexpected        ; whether/when to restart (default: unexpected)
-startsecs=1                   ; number of secs prog must stay running (def. 1)
-startretries=3                ; max # of serial start failures (default 3)
-exitcodes=0,2                 ; 'expected' exit codes for process (default 0,2)
-stopsignal=QUIT               ; signal used to kill process (default TERM)
-stopwaitsecs=10               ; max num secs to wait b4 SIGKILL (default 10)
-stopasgroup=false             ; send stop signal to the UNIX process group (default false)
-killasgroup=false             ; SIGKILL the UNIX process group (def false)
-;user=skywell                  ; setuid to this UNIX account to run the program
-;redirect_stderr=true          ; redirect proc stderr to stdout (default false)
-stdout_logfile=/var/log/sparkportal.log        ; stdout log path, NONE for none; default AUTO
-stdout_logfile_maxbytes=1MB   ; max # logfile bytes b4 rotation (default 50MB)
-stdout_logfile_backups=1     ; # of stdout logfile backups (default 10)
-stdout_capture_maxbytes=1MB   ; number of bytes in 'capturemode' (default 0)
-stdout_events_enabled=false   ; emit events on stdout writes (default false)
-stderr_logfile=/var/log/sparkportal.err        ; stderr log path, NONE for none; default AUTO
-stderr_logfile_maxbytes=1MB   ; max # logfile bytes b4 rotation (default 50MB)
-stderr_logfile_backups=10     ; # of stderr logfile backups (default 10)
-stderr_capture_maxbytes=1MB   ; number of bytes in 'capturemode' (default 0)
-stderr_events_enabled=false   ; emit events on stderr writes (default false)
-environment=A="1",B="2",HOME="/home/skywell"       ; process environment additions (def no adds),
-serverurl=AUTO                ; override serverurl computation (childutils)
-```
+  - ##### 重启任务
+
+    ```
+    supervisorctl restart 服务名
+    ```
+
+  - ##### 更新新的配置文件到`supervisord`（不会重启原来已运行的程序）
+
+    ```
+    supervisorctl update 
+    ```
+
+  - ##### 载入所有配置文件，并按新的配置启动、管理所有进程(会重启原来已运行的程序)
+
+    ```
+    supervisorctl reload
+    ```
+
+  - ##### 重启所有或进程组
+
+    ```
+    start all(或组名)
+    stop  all(或组名)
+    restart all(或组名)
+    ```
+
+
+
+
 
