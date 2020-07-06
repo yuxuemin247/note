@@ -8,7 +8,7 @@
 
   -i   换源安装
 
-- tesseract 光学识别 谷歌验证码识别的开山鼻祖,需要大量训练
+- ##### tesseract 光学识别 谷歌验证码识别的开山鼻祖,需要大量训练
 
   sudo python3 -m pip install -r  requirements.txt
 
@@ -41,4 +41,32 @@
   pip install --no-index --find-links=/your_packages/ -r requirements.txt   #批量离线安装包
   ```
 
-  
+### 私有源使用流程：
+
+地址：例如天眼源
+
+http://pypi.skyeye.corp.qihoo.net/simple
+
+##### 配置方式：
+
+Linux/Unix/Mac配置目录：~/.pip/pip.conf
+
+Win配置目录：C:\Users\你的用户名\pip\pip.ini
+
+文件内容：
+
+```
+[global]
+trusted-host=pypi.skyeye.corp.qihoo.net
+index-url=http://pypi.skyeye.corp.qihoo.net/simple
+disable-pip-version-check = true
+timeout = 120
+```
+
+##### 上传私有包
+
+1. 进入项目目录，包含setup.py
+2. 安装devpi客户端：pip install devpi-client
+3. 切换到天眼私有索引：devpi use /skyeye/prd
+4. 登陆账号：devpi login [username] --password=[password]
+5. 上传包：devpi upload

@@ -1,14 +1,7 @@
 rpm -ivh   xxx.rpm
 https://www.cnblogs.com/angelyan/p/11218260.html
 docker run -d --hostname my-rabbit --name rabbit -p 15672:15672 -p 5672:5672 rabbitmq:management
-rabbitmqctl  增加队列，用户，集群搭建
-rabbitmq-plugins 扩展
-rabbitmq-server
 
-rabbitmqctl reset  移除所有数据，要在rabbitmqctl stop_app之后使用
-rabbitmqctl join_cluster <clusterbode> [--ram]  组成集群命令
-rabbitmqctl cluster_status 集群状态
-rabbitmqctl forget_cluster_node [--offline]  摘除节点，忘记节点，失败状态
 
 exchanges  有direct   topic  fanout headers 。交换机有 持久化、自动删除、internal(exchange内部使用)
 dirct是直连，默认的。生产者的routingkey要与队列绑定routingkey完全一致

@@ -95,9 +95,13 @@
   ```
   
 
+#### 6、netstat
 
+- ```
+  yum install net-tools
+  ```
 
-
+  
 
 
 
