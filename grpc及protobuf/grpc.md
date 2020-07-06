@@ -28,7 +28,7 @@
   - 编译` protobuf`
 
     ```
-    python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. ./data.proto
+    python -m grpc_tools.protoc -i. --python_out=. --grpc_python_out=. ./data.proto
     #目录中执行编译，会生成：data_pb2.py 与 data_pb2_grpc.py
     ```
 
