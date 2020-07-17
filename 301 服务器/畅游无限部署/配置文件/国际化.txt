@@ -1,0 +1,9 @@
+integration中文目前68个，英文69个
+
+integration-Vectra_v2.yml category: 网络安全 做了标记
+init_dispose_policy.sql            系统策略-传感器联动 做了标记
+
+
+
+_app.config["PLAYBOOK_URL_PREFIX"] = "http://127.0.0.1:8080/skyeye/api/"
+_app.config["BABEL_DEFAULT_LOCALE"] = config.CONF.DEFAULT.locale
