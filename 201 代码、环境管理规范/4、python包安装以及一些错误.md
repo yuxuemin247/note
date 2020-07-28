@@ -76,3 +76,5 @@ timeout = 120
 3. 切换到天眼私有索引：devpi use /skyeye/prd
 4. 登陆账号：devpi login [username] --password=[password]
 5. 上传包：devpi upload
+
+##### 卸载包
