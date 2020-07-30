@@ -1,0 +1,22 @@
+syntax = "proto3";
+package example;
+
+service Example{
+  //最简单的传输方式
+  rpc test(req) returns (resp) {} ;
+
+  rpc client_recv_stream(req) returns ( stream resp1) {};
+}
+
+message req{
+  string data =1;
+}
+
+message resp{
+  string result =1;
+}
+
+message resp1{
+  string result = 1;
+}
+

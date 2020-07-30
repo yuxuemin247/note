@@ -25,13 +25,15 @@
   }
   ```
 
-  - 编译` protobuf`
+- 编译` protobuf`
 
-    ```
-    python -m grpc_tools.protoc -i. --python_out=. --grpc_python_out=. ./data.proto
-    #目录中执行编译，会生成：data_pb2.py 与 data_pb2_grpc.py
-    ```
-
+  ```
+  python -m grpc_tools.protoc -i. --python_out=. --grpc_python_out=. ./data.proto
+  #目录中执行编译，会生成：data_pb2.py 与 data_pb2_grpc.py
+  #_pb2.py文件存储的是 每一个message对应的信息存储，比如我们定义的request与response。
+  #_pb2_grpc.py 存储每一个服务的server端与客户端以及注册server的工具
+  ```
+  
 - 实现server端
 
   ```
