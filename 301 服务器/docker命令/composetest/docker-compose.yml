@@ -7,3 +7,5 @@ services:
       - "5000:5000"
   redis:
      image: "redis:alpine"
+     
+# docker-compose创建管理容器,docker-compose -f docker-compose.yml up -d

@@ -14,7 +14,7 @@
 
   ```
   cd env
-  source ./bin/activate
+  source ./bin/activatesou
   ```
 
 - 退出
