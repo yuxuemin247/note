@@ -33,3 +33,11 @@
   ```
   tar xf source.tar -C directory
   ```
+
+- 解压
+
+  ```
+  tar zxf  xxx.tgz
+  ```
+
+  

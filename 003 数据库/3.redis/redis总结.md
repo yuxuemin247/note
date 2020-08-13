@@ -170,3 +170,10 @@ hdoop hdfs  fsimag(全量快照),edis.log(增加日志)
 - 代理proxy,由代理层实现算法
 - 16384个槽位，redis自己实现的一个自有集群。只有改一个map映射，找到对应redis实例
 
+6、python的redis包
+
+```
+redis.StrictRedis 这个类中官方推荐，与redis-cli命令类似
+redis.redis 命令与redis-cli有区别，比如 zad 顺序
+```
+

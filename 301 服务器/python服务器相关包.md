@@ -9,3 +9,13 @@
 ### 3、pathlib
 
  是Python内置库，Python 文档给它的定义是 Object-oriented filesystem paths（面向对象的文件系统路径）
+
+### 4、pwd
+
+pwd模块提供了一个unix密码数据库即/etc/passwd的操作接口，这个数据库包含本地机器用户帐户信息
+
+pwd.getpwnam(name)：返回对应name的用户信息
+
+os.chroot(path);
+os.chroot() 方法用于更改当前进程的根目录为指定的目录，使用该函数需要管理员权限。
+
