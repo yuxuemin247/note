@@ -4,7 +4,7 @@ syntax = "proto3";
 //包名
 package test;
 
-//服务名，函数名
+// service关键字  Bibili服务名
 service Bibili {
   //要写的函数,rpc 是定义的关键字
   rpc helloyu(req) returns (resp){}
