@@ -134,6 +134,28 @@
   docker commit  容器名 镜像名
   ```
 
+- 容器重命名
+
+  ```
+  docker rename 旧容器名 新容器名
+  ```
+
+- 查看容器的ip
+
+  ```
+  docker inspect --format='{{.NetworkSettings.IPAddress}}' 容器id
+  ```
+
+- 容器中 sshd以守护进程运行
+
+  /usr/sbin/sshd -D
+
+  ```
+  docker run --name make3061 -d -p 37022:22 -p 37080:80 09c6db9216a1 /usr/sbin/sshd -D
+  ```
+
+  
+
 ### 3 创建容器的一些技术
 
 - 网络管理技术
