@@ -131,6 +131,31 @@
     [root@yu ~]# echo $D
     i am
     ```
+  
+- declare 声明变量
+
+  ```
+  declare -i ab //声明整数型变量
+  ab=56 //改变变量内容
+  echo $ab  //显示变量内容
+  56     
+  ```
+
+  ```
+  declare -a cd='([0]="a" [1]="b" [2]="c")' //声明数组型变量
+  echo ${cd[1]}   //显示变量内容
+  b   
+  echo ${cd{@}} //显示整个数组变量内容
+  a b c  
+  ```
+
+- lcoal
+
+  shell脚本中定义得变量是global,作用域从定义的开始，一直到shell结束或被显式删除的删除为止
+
+  shell函数定义的变量也是global,其作用域从函数被调用执行变量的地方开始，到shell结束或者显式的的删除为止。函数定义的变量也可以是local的，其作用域限于函数内部，但是函数的参数是local的。
+
+  如果局部变量和全局变量名字相同，那么在这个函数内部，会使用局部变量。
 
 #### 3.3 特殊变量：$n
 
@@ -671,7 +696,7 @@
     root /bin/bash
     ```
 
-  - 只显示/etc/passwd的第一列和第七列，以逗号分割，且在所有行前面添加列名user，shell。在最后一行添加"hello,world"。
+  - 只显示/etc/passwd的第一列和第七列，以逗号分割，且在第一行前面添加user，shell。在最后一行添加"hello,world"。
 
     ```
     [root@yu data]# awk -F : 'BEGIN{print "user,path"} {print $1","$7} END{print "hello,world"}' passwd 

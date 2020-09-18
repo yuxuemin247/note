@@ -19,3 +19,9 @@ pwd.getpwnam(name)：返回对应name的用户信息
 os.chroot(path);
 os.chroot() 方法用于更改当前进程的根目录为指定的目录，使用该函数需要管理员权限。
 
+### 5、subprocess
+
+subprocess 模块允许你生成新的进程，连接它们的输入、输出、错误管道，并且获取它们的返回码。此模块打算代替一些老旧的模块与功能：os.system,os.spawn*
+
+subprocess 提供了 call、check_call、check_output 这三个函数，作用都是执行命令，只不过返回值不同。chekout_output返回执行结果，call和check_call返回 状态码（0）。
+
