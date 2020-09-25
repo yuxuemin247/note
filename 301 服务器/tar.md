@@ -1,13 +1,13 @@
 - 打包文件夹
 
   ```
-  tar -cvf xxx.tar xxx/
+  tar -czvf xxx.tar xxx/
   ```
 
 - 解包文件夹
 
   ```
-  tar -xf xxx.tar
+  tar -zxf xxx.tar
   ```
 
   

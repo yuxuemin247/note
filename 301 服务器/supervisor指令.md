@@ -54,7 +54,7 @@
     supervisorctl update 
     ```
 
-  - ##### 载入所有配置文件，并按新的配置启动、管理所有进程(会重启原来已运行的程序)
+  - ##### 载入所有配置文件，并按新的配置启动、管理所有进程(会重启原来已运行的程序)，重启supervisord
 
     ```
     supervisorctl reload
@@ -67,8 +67,6 @@
     stop  all(或组名)
     restart all(或组名)
     ```
-
-
-
-
+  
+  注： 能 supervisorctl、 celery 这样执行是因为 有个可执行文件，而可执行文件其实用python解释器执行
 
