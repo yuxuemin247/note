@@ -99,6 +99,7 @@
   ```
   docker logs 容器名
   docker logs -f 容器名            类似tailf
+  docker logs -f -t --tail 20 容器名
   ```
 
 - 查看容器的内部进程信息

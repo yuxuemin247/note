@@ -18,16 +18,28 @@
   bin/kafka-console-consumer.sh --topic first --zookeeper 39.100.114.253:2182 
   #topic名-分区 文件夹下有 xxx.log(实际存储数据)
   ```
+  
 - 消费者组
 
-```
-bin/kafka-console-consumer.sh --zookeeper 39.100.114.253:2182 --topic first  --consumer.config  config/consumer.properties  #指定配置文件consumer.propertie 这个文件中的group_id要一样。
---zookeeper 与 --bootstrap-server 都一样
-```
+  ```
+  bin/kafka-console-consumer.sh --zookeeper 39.100.114.253:2182 --topic first  --consumer.config  config/consumer.properties  #指定配置文件consumer.propertie 这个文件中的group_id要一样。
+  --zookeeper 与 --bootstrap-server 都一样
+  ```
 
   ```
-- ookeeper
-- 消费
-  高级`API`，写起来简单，不需要自行去管理offset,不需要管理分区，副本等情况。
-  低级`API`，开发者自己控制`offset`，选择哪个分区，找到分区leader  
+  - ookeeper
+  - 消费
+    高级`API`，写起来简单，不需要自行去管理offset,不需要管理分区，副本等情况。
+    低级`API`，开发者自己控制`offset`，选择哪个分区，找到分区leader  
   ```
+
+- 其他
+
+  ```
+  1.kafka controller就是用来写元数据的，然后同步其他
+  2.kafka中有两个地方需要选举，controller和 leader(ISR)
+  3.kafka的哪些设计让它有如此高的性能 ?
+    它是分布式的，顺序写磁盘，零拷贝(zero copy)
+  ```
+
+  

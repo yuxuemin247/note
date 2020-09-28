@@ -68,5 +68,11 @@
     restart all(或组名)
     ```
   
-  注： 能 supervisorctl、 celery 这样执行是因为 有个可执行文件，而可执行文件其实用python解释器执行
+  注：
+  
+  1. 能 supervisorctl、 celery 这样指令执行是因为 有个可执行文件，而可执行文件其实用python解释器执行
+  
+  2.  supervisord服务现在也支持python3了，可以启动多个supervisord程序，supervisord.conf配置中文件描述符位置不同即可。
+  
+     
 

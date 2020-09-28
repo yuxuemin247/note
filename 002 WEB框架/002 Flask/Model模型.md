@@ -326,7 +326,27 @@ def delete():
     return '删除'
 ```
 
+#### (5) 查询更新
 
+```
+db.session.query(User).filter(User.id == id).update(
+{"status": 10},synchronize_session=False)
+db.session.commit()
+```
+
+#### (6) 查询删除
+
+```
+db.session.query(User).filter_by(id=id).delete(synchronize_session='fetch')
+db.session.commit()
+```
+
+#### (7) 分离对象与session
+
+db.session.expunge(model)  分离对象与session的联系 
+make_transient(model)  分离对象与session的联系 
+
+1、sqlalchemy的对象实体（model），和session建立了联系，你get、set这些model的时候，就算已经commit，也会重新自动和数据库建立连接（get的时候会重新select、set的时候会重新建立连接，等待你提交，如果你不提交，这个连接一直存在，最终会耗尽。），所以要谨慎使用model的字段，除非你确实明白自己在做什么，会发生什么。使用db.session.expunge会切断实体和session的关系
 
 ## 七、数据库操作
 

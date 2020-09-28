@@ -271,3 +271,9 @@ ElasticSearch整体使用RESTful规范，基于HTTP协议，并使用json格式�
   GET /_search?size=5&from=5
   GET /_search?size=5&from=10
   ```
+
+##### 6、ES性能
+
+ELasticsearch为每个field都建立了一个倒排索引。
+它使用了多种压缩技术(FST)，尽可能将索引数据从硬盘放到内存
+对每一个field字段建立一个term dictionary,并且对item本身又做了一层索引，term _index

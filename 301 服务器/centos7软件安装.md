@@ -101,6 +101,12 @@
   yum install net-tools
   ```
 
+#### 7、 ipconfig
+
+- ```
+  yum  install  -y net-tools #net-tools 包中含有ipconfig
+  ```
+
   
 
 

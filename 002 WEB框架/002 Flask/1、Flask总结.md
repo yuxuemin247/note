@@ -981,9 +981,18 @@ class SQLHelper(object):
 obj = SQLHelper.fetch_one("select id,name from users where name=%(user)s and pwd=%(pwd)s", form.data)
 ```
 
+## 17.导出文件
 
+```
+from flask import make_response, send_from_directory
+response = make_response(send_from_directory(directory=os.path.dirname(path),
+filename=os.path.basename(path), as_attachment=True))
+response.headers["Content-Disposition"] = "attachment;filename={}".format(quote(title.encode('utf-8')))
+response.headers['Content-Type'] = 'application/x-xlsx'
+return response
+```
 
-## 17.wtforms
+## 18.wtforms
 
 安装:pip3 install wtforms
 
@@ -1217,7 +1226,7 @@ if __name__ == '__main__':
 
 
 
-## 18.信号
+## 19.信号
 
 Flask框架中的信号基于blinker，其主要就是让开发者可是在flask请求过程中定制一些用户行为 
 
@@ -1322,7 +1331,7 @@ if __name__ == '__main__':
 
 
 
-## 19.多app应用
+## 20.多app应用
 
 ```python
 from werkzeug.wsgi import DispatcherMiddleware
@@ -1350,7 +1359,7 @@ if __name__ == "__main__":
 
 ```
 
-## 20.flask-script
+## 21.flask-script
 
 用于实现类似于django中 python3 manage.py runserver  ...类似的命令，就是一个flask终端运行解析器。
 
